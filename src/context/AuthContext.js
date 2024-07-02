@@ -46,42 +46,6 @@ const reducer = (state, action) => {
         isAuthenticated,
         user,
       };
-
-    case UPDATE_PROFILE:
-      const {
-        userId,
-        name,
-        avatarUrl,
-        coverUrl,
-        aboutMe,
-        city,
-        country,
-        company,
-        jobTitle,
-        facebookLink,
-        instagramLink,
-        linkedinLink,
-        twitterLink,
-      } = action.payload;
-      return {
-        ...state,
-        user: {
-          ...state.user,
-          userId,
-          name,
-          avatarUrl,
-          coverUrl,
-          aboutMe,
-          city,
-          country,
-          company,
-          jobTitle,
-          facebookLink,
-          instagramLink,
-          linkedinLink,
-          twitterLink,
-        },
-      };
     default:
       return state;
   }
@@ -101,7 +65,6 @@ const AuthContext = createContext({ ...initialState });
 
 function AuthProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const data = useSelector((state) => state.user.updatedProfile);
 
   useEffect(() => {
     const initialize = async () => {
@@ -134,10 +97,6 @@ function AuthProvider({ children }) {
     };
     initialize();
   }, []);
-
-  useEffect(() => {
-    if (data) dispatch({ type: UPDATE_PROFILE, payload: data });
-  }, [data]);
 
   const login = async ({ email, password }, callback) => {
     const response = await apiService.post("/auth/login", { email, password });
