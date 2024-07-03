@@ -1,7 +1,16 @@
 import React from "react";
+import { BrowserRouter } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";
+import ThemeProvider from "./theme";
 
 function App() {
-  return <div>HI</div>;
+  return (
+    <AuthProvider>
+      <ThemeProvider>
+        <BrowserRouter>HI</BrowserRouter>
+      </ThemeProvider>
+    </AuthProvider>
+  );
 }
 
 export default App;
