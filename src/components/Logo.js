@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
 import React from "react";
-import chatlogo from "../chatlogo.png";
+import chatlogo from "../logo.jpg";
 import { Link } from "react-router-dom";
 
 function Logo({ disabledLink = false, sx }) {

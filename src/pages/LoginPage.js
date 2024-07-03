@@ -6,7 +6,7 @@ import Card from "@mui/material/Card";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
-import TextField from "@mui/material/TextField";
+import { FormProvider, FTextField } from "../components/form";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import LoadingButton from "@mui/lab/LoadingButton";
@@ -18,12 +18,40 @@ import { bgGradient } from "src/theme/css";
 import Logo from "src/components/logo";
 import Iconify from "src/components/iconify";
 
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as Yup from "yup";
+import useAuth from "../hooks/useAuth";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Alert } from "@mui/material";
+import { Link as RouterLink } from "react-router-dom";
+
 // ----------------------------------------------------------------------
+
+const LoginSchema = Yup.object().shape({
+  email: Yup.string().email("Invalid email").required("Email is required"),
+  password: Yup.string().required("Password is required"),
+});
+
+const defaultValues = {
+  email: "",
+  password: "",
+};
 
 export default function LoginPage() {
   const theme = useTheme();
 
   const [showPassword, setShowPassword] = useState(false);
+
+  const auth = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const methods = useForm({
+    resolver: yupResolver(LoginSchema),
+    defaultValues,
+  })
+
+  const 
 
   const handleClick = () => {
     alert("Login");
