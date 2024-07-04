@@ -49,20 +49,38 @@ export default function LoginPage() {
   const methods = useForm({
     resolver: yupResolver(LoginSchema),
     defaultValues,
-  })
+  });
 
-  const 
+  const {
+    handleSubmit,
+    reset,
+    setError,
+    formState: { errors, isSubmitting },
+  } = methods;
 
-  const handleClick = () => {
-    alert("Login");
+  const onSubmit = async (data) => {
+    const from = location.state?.from?.pathname || "/";
+    const { email, password } = data;
+    try {
+      await auth.login({ email, password }, () => {
+        navigate(from, { replace: true });
+      });
+    } catch (error) {
+      reset();
+      setError("responseError", error);
+      console.log(errors);
+    }
   };
 
   const renderForm = (
-    <>
+    <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Stack spacing={3}>
-        <TextField name="email" label="Email address" />
+        {!!errors.responseError && (
+          <Alert severity="error">{errors.responseError.message}</Alert>
+        )}
+        <FTextField name="email" label="Email address" />
 
-        <TextField
+        <FTextField
           name="password"
           label="Password"
           type={showPassword ? "text" : "password"}
@@ -89,7 +107,7 @@ export default function LoginPage() {
         justifyContent="flex-end"
         sx={{ my: 3 }}
       >
-        <Link variant="subtitle2" underline="hover">
+        <Link component={RouterLink} variant="subtitle2" underline="hover">
           Forgot password?
         </Link>
       </Stack>
@@ -100,11 +118,12 @@ export default function LoginPage() {
         type="submit"
         variant="contained"
         color="inherit"
-        onClick={handleClick}
+        onClick={onSubmit}
+        loading={isSubmitting}
       >
         Login
       </LoadingButton>
-    </>
+    </FormProvider>
   );
 
   return (
@@ -133,14 +152,15 @@ export default function LoginPage() {
             maxWidth: 420,
           }}
         >
-          <Typography variant="h4">Sign in to Minimal</Typography>
-
-          <Typography variant="body2" sx={{ mt: 2, mb: 5 }}>
-            Don’t have an account?
-            <Link variant="subtitle2" sx={{ ml: 0.5 }}>
-              Get started
-            </Link>
-          </Typography>
+          <Typography variant="h4">Sign in to ShopNow</Typography>
+          <Alert severity="info">
+            <Typography variant="body2" sx={{ mt: 2, mb: 5 }}>
+              Don’t have an account?{" "}
+              <Link component={RouterLink} variant="subtitle2" sx={{ ml: 0.5 }}>
+                Get started
+              </Link>
+            </Typography>
+          </Alert>
 
           <Stack direction="row" spacing={2}>
             <Button
