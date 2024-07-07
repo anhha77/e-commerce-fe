@@ -110,7 +110,9 @@ function RegisterPage() {
             endAdornment: (
               <InputAdornment position="end">
                 <IconButton
-                  onClick={() => setShowPassword(!showPasswordConfirmation)}
+                  onClick={() =>
+                    setShowPasswordConfirmation(!showPasswordConfirmation)
+                  }
                   edge="end"
                 >
                   <Iconify
