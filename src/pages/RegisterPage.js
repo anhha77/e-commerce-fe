@@ -9,10 +9,7 @@ import {
   Alert,
   alpha,
   Box,
-  Button,
   Card,
-  Container,
-  Divider,
   IconButton,
   InputAdornment,
   Link,
@@ -184,3 +181,5 @@ function RegisterPage() {
     </Box>
   );
 }
+
+export default RegisterPage;
