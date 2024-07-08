@@ -1,18 +1,36 @@
-import React from "react";
-import { Box, Stack } from "@mui/material";
-import AlertMsg from "../components/AlertMsg";
-import MainHeader from "./MainHeader";
-import MainFooter from "./MainFooter";
-import { Outlet } from "react-router-dom";
+import { useState } from "react";
+import PropTypes from "prop-types";
 
-function MainLayout() {
+import Box from "@mui/material/Box";
+
+import Nav from "../components/Nav";
+import Main from "./main";
+import Header from "./header";
+
+// ----------------------------------------------------------------------
+
+export default function MainLayout({ children }) {
+  const [openNav, setOpenNav] = useState(false);
+
   return (
-    <Stack sx={{ minHeight: 1 }}>
-      <MainHeader />
-      <AlertMsg />
-      <Outlet />
-      <Box sx={{ flexGrow: 1 }} />
-      <MainFooter />
-    </Stack>
+    <>
+      <Header onOpenNav={() => setOpenNav(true)} />
+
+      <Box
+        sx={{
+          minHeight: 1,
+          display: "flex",
+          flexDirection: { xs: "column", lg: "row" },
+        }}
+      >
+        <Nav openNav={openNav} onCloseNav={() => setOpenNav(false)} />
+
+        <Main>{children}</Main>
+      </Box>
+    </>
   );
 }
+
+MainLayout.propTypes = {
+  children: PropTypes.node,
+};
