@@ -15,9 +15,9 @@ import Iconify from "./Logo";
 
 import Searchbar from "./SearchBar";
 import { NAV, HEADER } from "../app/configLayout";
-import AccountPopover from "./common/account-popover";
-import LanguagePopover from "./common/language-popover";
-import NotificationsPopover from "./common/notifications-popover";
+import AccountPopover from "./AccountPopover";
+import LanguagePopover from "./LanguagePopover";
+import NotificationsPopover from "./NotificationPopover";
 
 // ----------------------------------------------------------------------
 

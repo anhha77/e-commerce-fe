@@ -1,15 +1,14 @@
 import { useState } from "react";
-import PropTypes from "prop-types";
 
 import Box from "@mui/material/Box";
 
 import Nav from "../components/Nav";
-import Main from "./main";
-import Header from "./header";
+import Main from "../components/Main";
+import Header from "../components/Header";
 
 // ----------------------------------------------------------------------
 
-export default function MainLayout({ children }) {
+export default function MainLayout() {
   const [openNav, setOpenNav] = useState(false);
 
   return (
@@ -25,12 +24,8 @@ export default function MainLayout({ children }) {
       >
         <Nav openNav={openNav} onCloseNav={() => setOpenNav(false)} />
 
-        <Main>{children}</Main>
+        <Main />
       </Box>
     </>
   );
 }
-
-MainLayout.propTypes = {
-  children: PropTypes.node,
-};
