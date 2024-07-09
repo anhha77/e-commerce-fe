@@ -132,7 +132,6 @@ function RegisterPage() {
         type="submit"
         variant="contained"
         color="inherit"
-        onClick={onSubmit}
         loading={isSubmitting}
       >
         Register

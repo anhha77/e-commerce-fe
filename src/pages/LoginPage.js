@@ -118,7 +118,6 @@ export default function LoginPage() {
         type="submit"
         variant="contained"
         color="inherit"
-        onClick={onSubmit}
         loading={isSubmitting}
       >
         Login

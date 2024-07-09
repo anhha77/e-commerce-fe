@@ -64,8 +64,8 @@ export default function Nav({ openNav, onCloseNav }) {
 
   const renderMenu = (
     <Stack component="nav" spacing={0.5} sx={{ px: 2 }}>
-      {navConfig.map((item) => (
-        <NavItem key={item.title} item={item} />
+      {navConfig.map((item, index) => (
+        <NavItem key={item.title} item={item} id={index} />
       ))}
     </Stack>
   );
@@ -168,21 +168,15 @@ Nav.propTypes = {
 
 // ----------------------------------------------------------------------
 
-function NavItem({ item }) {
-  let active = false;
-
-  const handleItemClicked = (event) => {
-    let title = event.target.innerText;
-    if (title.toLowerCase() === item.title) {
-      active = true;
-    }
-  };
+function NavItem({ item, id }) {
+  const urlParams = new URLSearchParams(window.location.search);
+  const idx = urlParams.get("id");
+  const active = item.id === parseInt(idx);
 
   return (
     <ListItemButton
       component={RouterLink}
-      href={item.path}
-      onClick={(event) => handleItemClicked(event)}
+      to={`/?id=${id}`}
       sx={{
         minHeight: 44,
         borderRadius: 0.75,
