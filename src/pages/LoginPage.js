@@ -13,10 +13,10 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import { alpha, useTheme } from "@mui/material/styles";
 import InputAdornment from "@mui/material/InputAdornment";
 
-import { bgGradient } from "src/theme/css";
+import { bgGradient } from "../theme/css";
 
-import Logo from "src/components/logo";
-import Iconify from "src/components/iconify";
+import Logo from "../components/Logo";
+import Iconify from "../components/Iconify";
 
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -154,15 +154,20 @@ export default function LoginPage() {
         >
           <Typography variant="h4">Sign in to ShopNow</Typography>
           <Alert severity="info">
-            <Typography variant="body2" sx={{ mt: 2, mb: 5 }}>
+            <Typography variant="body2">
               Don’t have an account?{" "}
-              <Link component={RouterLink} variant="subtitle2" sx={{ ml: 0.5 }}>
+              <Link
+                component={RouterLink}
+                variant="subtitle2"
+                sx={{ ml: 0.5 }}
+                to="/register"
+              >
                 Get started
               </Link>
             </Typography>
           </Alert>
 
-          <Stack direction="row" spacing={2}>
+          <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
             <Button
               fullWidth
               size="large"

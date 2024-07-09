@@ -17,7 +17,7 @@ import {
   Typography,
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
-import Iconify from "src/components/iconify";
+import Iconify from "../components/Iconify";
 import { bgGradient } from "../theme/css";
 import { useTheme } from "@emotion/react";
 import Logo from "../components/Logo";
@@ -72,7 +72,7 @@ function RegisterPage() {
 
   const renderForm = (
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-      <Stack spacing={3}>
+      <Stack spacing={3} sx={{ mt: 2, mb: 2 }}>
         {!!errors.responseError && (
           <Alert severity="error">{errors.responseError.message}</Alert>
         )}
@@ -168,9 +168,14 @@ function RegisterPage() {
         >
           <Typography variant="h4">Register to ShopNow</Typography>
           <Alert severity="info">
-            <Typography variant="body2" sx={{ mt: 2, mb: 5 }}>
+            <Typography variant="body2">
               Already have an acount?{" "}
-              <Link component={RouterLink} variant="subtitle2" sx={{ ml: 0.5 }}>
+              <Link
+                component={RouterLink}
+                variant="subtitle2"
+                sx={{ ml: 0.5 }}
+                to="/login"
+              >
                 Sign In
               </Link>
             </Typography>

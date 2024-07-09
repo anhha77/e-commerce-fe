@@ -169,14 +169,20 @@ Nav.propTypes = {
 // ----------------------------------------------------------------------
 
 function NavItem({ item }) {
-  const pathname = usePathname();
+  let active = false;
 
-  const active = item.path === pathname;
+  const handleItemClicked = (event) => {
+    let title = event.target.innerText;
+    if (title.toLowerCase() === item.title) {
+      active = true;
+    }
+  };
 
   return (
     <ListItemButton
       component={RouterLink}
       href={item.path}
+      onClick={(event) => handleItemClicked(event)}
       sx={{
         minHeight: 44,
         borderRadius: 0.75,

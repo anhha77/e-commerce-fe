@@ -13,7 +13,7 @@ export default function LoadingScreen() {
         alignItems: "center",
       }}
     >
-      <CircularProgress color="secondary.light" />
+      <CircularProgress />
     </Box>
   );
 }

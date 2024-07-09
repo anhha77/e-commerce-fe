@@ -11,13 +11,13 @@ import { useResponsive } from "../hooks/useResponsive";
 
 import { bgBlur } from "../theme/css";
 
-import Iconify from "./Logo";
+import Iconify from "../components/Iconify";
 
 import Searchbar from "./SearchBar";
 import { NAV, HEADER } from "../app/configLayout";
 import AccountPopover from "./AccountPopover";
 import LanguagePopover from "./LanguagePopover";
-import NotificationsPopover from "./NotificationPopover";
+import NotificationsPopover from "./NotificationsPopover";
 
 // ----------------------------------------------------------------------
 
