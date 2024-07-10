@@ -8,7 +8,6 @@ function AuthRequire({ children }) {
   const location = useLocation();
 
   if (!isInitialized) {
-    console.log("1");
     return <LoadingScreen />;
   }
 

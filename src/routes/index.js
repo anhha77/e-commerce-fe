@@ -8,6 +8,9 @@ import AuthRequire from "./AuthRequire";
 import useAuth from "../hooks/useAuth";
 import HomePage from "../pages/HomePage";
 import NotFoundPage from "../pages/NotFoundPage";
+import AdminLoginPage from "../pages/AdminLoginPage";
+import AdminHomePage from "../pages/AdminHomePage";
+import RoleRequire from "./RoleRequire";
 
 export default function Router() {
   const location = useLocation();
@@ -25,10 +28,19 @@ export default function Router() {
           }
         >
           <Route index element={<HomePage />} />
+          <Route
+            path="admin"
+            element={
+              <RoleRequire>
+                <AdminHomePage />
+              </RoleRequire>
+            }
+          />
         </Route>
 
         <Route element={<BlankLayout />}>
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/login/admin" element={<AdminLoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>

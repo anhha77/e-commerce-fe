@@ -9,8 +9,10 @@ import {
 import React from "react";
 import PersonIcon from "@mui/icons-material/Person";
 import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
+import { useNavigate } from "react-router-dom";
 
-function UserPopover({ anchorEl, handleClose }) {
+function UserPopover({ anchorEl, setIsAdmin, handleClose }) {
+  const navigate = useNavigate();
   return (
     <Popover
       open={Boolean(anchorEl)}
@@ -23,7 +25,13 @@ function UserPopover({ anchorEl, handleClose }) {
     >
       <List>
         <ListItem disablePadding>
-          <ListItemButton onClick={handleClose}>
+          <ListItemButton
+            onClick={() => {
+              setIsAdmin(false);
+              navigate("/login");
+              handleClose();
+            }}
+          >
             <ListItemIcon>
               <PersonIcon />
             </ListItemIcon>
@@ -32,7 +40,13 @@ function UserPopover({ anchorEl, handleClose }) {
         </ListItem>
 
         <ListItem disablePadding>
-          <ListItemButton onClick={handleClose}>
+          <ListItemButton
+            onClick={() => {
+              setIsAdmin(true);
+              navigate("/login/admin");
+              handleClose();
+            }}
+          >
             <ListItemIcon>
               <SupervisorAccountIcon />
             </ListItemIcon>
