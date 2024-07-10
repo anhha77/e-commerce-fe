@@ -25,6 +25,8 @@ import useAuth from "../hooks/useAuth";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Alert } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
+import UserLogo from "../components/UserLogo";
+import UserPopover from "../components/UserPopover";
 
 // ----------------------------------------------------------------------
 
@@ -42,6 +44,7 @@ export default function LoginPage() {
   const theme = useTheme();
 
   const [showPassword, setShowPassword] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(false);
 
   const auth = useAuth();
   const location = useLocation();
@@ -70,6 +73,10 @@ export default function LoginPage() {
       setError("responseError", error);
       console.log(errors);
     }
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
   };
 
   const renderForm = (
@@ -126,87 +133,104 @@ export default function LoginPage() {
   );
 
   return (
-    <Box
-      sx={{
-        ...bgGradient({
-          color: alpha(theme.palette.background.default, 0.9),
-          imgUrl: "/assets/background/overlay_4.jpg",
-        }),
-        height: 1,
-      }}
-    >
-      <Logo
+    <>
+      <UserLogo
         sx={{
-          position: "fixed",
-          top: { xs: 16, md: 24 },
-          left: { xs: 16, md: 24 },
+          width: 50,
+          height: 50,
+          mb: "5",
+          borderRadius: "50%",
+          border: (theme) => `1px solid ${theme.palette.grey[500]}`,
+          display: "flex",
+          alignItems: "center",
+        }}
+        handleAction={() => {
+          console.log("hi");
         }}
       />
-
-      <Stack alignItems="center" justifyContent="center" sx={{ height: 1 }}>
-        <Card
+      <UserPopover anchorEl={anchorEl} handleClose={handleClose} />
+      <Box
+        sx={{
+          ...bgGradient({
+            color: alpha(theme.palette.background.default, 0.9),
+            imgUrl: "/assets/background/overlay_4.jpg",
+          }),
+          height: 1,
+        }}
+      >
+        <Logo
           sx={{
-            p: 5,
-            width: 1,
-            maxWidth: 420,
+            position: "fixed",
+            top: { xs: 16, md: 24 },
+            left: { xs: 16, md: 24 },
           }}
-        >
-          <Typography variant="h4">Sign in to ShopNow</Typography>
-          <Alert severity="info">
-            <Typography variant="body2">
-              Don’t have an account?{" "}
-              <Link
-                component={RouterLink}
-                variant="subtitle2"
-                sx={{ ml: 0.5 }}
-                to="/register"
+        />
+
+        <Stack alignItems="center" justifyContent="center" sx={{ height: 1 }}>
+          <Card
+            sx={{
+              p: 5,
+              width: 1,
+              maxWidth: 420,
+            }}
+          >
+            <Typography variant="h4">Sign in to ShopNow</Typography>
+            <Alert severity="info">
+              <Typography variant="body2">
+                Don’t have an account?{" "}
+                <Link
+                  component={RouterLink}
+                  variant="subtitle2"
+                  sx={{ ml: 0.5 }}
+                  to="/register"
+                >
+                  Get started
+                </Link>
+              </Typography>
+            </Alert>
+
+            <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
+              <Button
+                fullWidth
+                size="large"
+                color="inherit"
+                variant="outlined"
+                sx={{ borderColor: alpha(theme.palette.grey[500], 0.16) }}
               >
-                Get started
-              </Link>
-            </Typography>
-          </Alert>
+                <Iconify icon="eva:google-fill" color="#DF3E30" />
+              </Button>
 
-          <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
-            <Button
-              fullWidth
-              size="large"
-              color="inherit"
-              variant="outlined"
-              sx={{ borderColor: alpha(theme.palette.grey[500], 0.16) }}
-            >
-              <Iconify icon="eva:google-fill" color="#DF3E30" />
-            </Button>
+              <Button
+                fullWidth
+                size="large"
+                color="inherit"
+                variant="outlined"
+                sx={{ borderColor: alpha(theme.palette.grey[500], 0.16) }}
+              >
+                <Iconify icon="eva:facebook-fill" color="#1877F2" />
+              </Button>
 
-            <Button
-              fullWidth
-              size="large"
-              color="inherit"
-              variant="outlined"
-              sx={{ borderColor: alpha(theme.palette.grey[500], 0.16) }}
-            >
-              <Iconify icon="eva:facebook-fill" color="#1877F2" />
-            </Button>
+              <Button
+                fullWidth
+                size="large"
+                color="inherit"
+                variant="outlined"
+                sx={{ borderColor: alpha(theme.palette.grey[500], 0.16) }}
+              >
+                <Iconify icon="eva:twitter-fill" color="#1C9CEA" />
+              </Button>
+            </Stack>
 
-            <Button
-              fullWidth
-              size="large"
-              color="inherit"
-              variant="outlined"
-              sx={{ borderColor: alpha(theme.palette.grey[500], 0.16) }}
-            >
-              <Iconify icon="eva:twitter-fill" color="#1C9CEA" />
-            </Button>
-          </Stack>
+            <Divider sx={{ my: 3 }}>
+              <Typography variant="body2" sx={{ color: "text.secondary" }}>
+                OR
+              </Typography>
+            </Divider>
 
-          <Divider sx={{ my: 3 }}>
-            <Typography variant="body2" sx={{ color: "text.secondary" }}>
-              OR
-            </Typography>
-          </Divider>
-
-          {renderForm}
-        </Card>
-      </Stack>
-    </Box>
+            {renderForm}
+          </Card>
+        </Stack>
+      </Box>
+    </>
   );
 }

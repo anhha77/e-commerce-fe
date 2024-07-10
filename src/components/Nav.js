@@ -171,7 +171,12 @@ Nav.propTypes = {
 function NavItem({ item, id }) {
   const urlParams = new URLSearchParams(window.location.search);
   const idx = urlParams.get("id");
-  const active = item.id === parseInt(idx);
+  let active = null;
+  if (idx === null && item.id === 0) {
+    active = true;
+  } else {
+    active = item.id === parseInt(idx);
+  }
 
   return (
     <ListItemButton
