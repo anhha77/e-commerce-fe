@@ -14,6 +14,8 @@ const INITIALIZE = "AUTH.INITIALIZE";
 const LOGIN_SUCCESS = "AUTH.LOGIN_SUCCESS";
 const REGISTER_SUCCESS = "AUTH.REGISTER_SUCCESS";
 const LOGOUT = "AUTH.LOGOUT";
+const LOGIN_AS_ADMIN = "LOGIN.ADMIN";
+const LOGIN_AS_USER = "LOGIN.USER";
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -36,6 +38,7 @@ const reducer = (state, action) => {
         ...state,
         isAuthenticated: false,
         user: null,
+        isLoginAsAdmin: false,
       };
 
     case INITIALIZE:
@@ -45,6 +48,18 @@ const reducer = (state, action) => {
         isInitialized: true,
         isAuthenticated,
         user,
+      };
+
+    case LOGIN_AS_ADMIN:
+      return {
+        ...state,
+        isLoginAsAdmin: true,
+      };
+
+    case LOGIN_AS_USER:
+      return {
+        ...state,
+        isLoginAsAdmin: false,
       };
     default:
       return state;
@@ -134,8 +149,20 @@ function AuthProvider({ children }) {
     callback();
   };
 
+  const loginAsAdmin = (callback) => {
+    dispatch({ type: LOGIN_AS_ADMIN });
+    callback();
+  };
+
+  const loginAsUser = (callback) => {
+    dispatch({ type: LOGIN_AS_USER });
+    callback();
+  };
+
   return (
-    <AuthContext.Provider value={{ ...state, login, register, logout }}>
+    <AuthContext.Provider
+      value={{ ...state, login, register, logout, loginAsAdmin, loginAsUser }}
+    >
       {children}
     </AuthContext.Provider>
   );

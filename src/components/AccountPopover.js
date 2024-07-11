@@ -59,6 +59,11 @@ export default function AccountPopover() {
     }
   };
 
+  const handleChangeView = () => {
+    if (auth.isLoginAsAdmin) return auth.loginAsUser(() => navigate("/"));
+    return auth.loginAsAdmin(() => navigate("/admin"));
+  };
+
   return (
     <>
       <IconButton
@@ -112,26 +117,36 @@ export default function AccountPopover() {
 
         <Divider sx={{ borderStyle: "dashed" }} />
 
-        <MenuItem>
-          <Stack
-            direction="row"
-            justifyContent="flex-start"
-            alignItems="center"
-            rowGap={2}
-          >
-            {auth.user.role === "admin" ? null : auth.isLoginAsAdmin ? (
-              <>
-                <AccountCircleIcon />
-                Login As User
-              </>
-            ) : (
-              <>
-                <SupervisedUserCircleIcon />
-                Login As Admin
-              </>
-            )}
-          </Stack>
-        </MenuItem>
+        {auth.user.role !== "admin" ? null : (
+          <>
+            <MenuItem onClick={handleChangeView}>
+              <Stack
+                direction="row"
+                justifyContent="flex-start"
+                alignItems="center"
+                rowGap={2}
+              >
+                {auth.isLoginAsAdmin ? (
+                  <>
+                    <AccountCircleIcon
+                      sx={{ mr: 1, width: 20, height: 20, opacity: 0.7 }}
+                    />
+                    Login As User
+                  </>
+                ) : (
+                  <>
+                    <SupervisedUserCircleIcon
+                      sx={{ mr: 1, width: 20, height: 20, opacity: 0.7 }}
+                    />
+                    Login As Admin
+                  </>
+                )}
+              </Stack>
+            </MenuItem>
+
+            <Divider sx={{ borderStyle: "dashed" }} />
+          </>
+        )}
 
         {MENU_OPTIONS.map((option) => (
           <MenuItem key={option.label} onClick={handleClose}>

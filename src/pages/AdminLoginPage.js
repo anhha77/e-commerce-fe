@@ -67,7 +67,7 @@ export default function LoginPage() {
     const { email, password } = data;
     try {
       await auth.login({ email, password }, () => {
-        navigate(from, { replace: true });
+        auth.loginAsAdmin(() => navigate(from, { replace: true }));
       });
     } catch (error) {
       reset();
