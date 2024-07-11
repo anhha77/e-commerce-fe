@@ -15,6 +15,8 @@ import { account } from "../mock/account";
 import Iconify from "../components/Iconify";
 import useAuth from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import SupervisedUserCircleIcon from "@mui/icons-material/SupervisedUserCircle";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
 // ----------------------------------------------------------------------
 
@@ -73,14 +75,14 @@ export default function AccountPopover() {
       >
         <Avatar
           src={account.photoURL}
-          alt={account.displayName}
+          alt={auth.user.username}
           sx={{
             width: 36,
             height: 36,
             border: (theme) => `solid 2px ${theme.palette.background.default}`,
           }}
         >
-          {account.displayName.charAt(0).toUpperCase()}
+          {auth.user.username.charAt(0).toUpperCase()}
         </Avatar>
       </IconButton>
 
@@ -101,14 +103,35 @@ export default function AccountPopover() {
       >
         <Box sx={{ my: 1.5, px: 2 }}>
           <Typography variant="subtitle2" noWrap>
-            {account.displayName}
+            {auth.user.username}
           </Typography>
           <Typography variant="body2" sx={{ color: "text.secondary" }} noWrap>
-            {account.email}
+            {auth.user.email}
           </Typography>
         </Box>
 
         <Divider sx={{ borderStyle: "dashed" }} />
+
+        <MenuItem>
+          <Stack
+            direction="row"
+            justifyContent="flex-start"
+            alignItems="center"
+            rowGap={2}
+          >
+            {auth.user.role === "admin" ? null : auth.isLoginAsAdmin ? (
+              <>
+                <AccountCircleIcon />
+                Login As User
+              </>
+            ) : (
+              <>
+                <SupervisedUserCircleIcon />
+                Login As Admin
+              </>
+            )}
+          </Stack>
+        </MenuItem>
 
         {MENU_OPTIONS.map((option) => (
           <MenuItem key={option.label} onClick={handleClose}>

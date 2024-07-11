@@ -7,6 +7,7 @@ const initialState = {
   isInitialized: false,
   isAuthenticated: false,
   user: null,
+  isLoginAsAdmin: false,
 };
 
 const INITIALIZE = "AUTH.INITIALIZE";
