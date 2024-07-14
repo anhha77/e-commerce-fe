@@ -2,9 +2,9 @@ import { useState } from "react";
 
 import Box from "@mui/material/Box";
 
-import Nav from "../components/Nav";
-import Main from "../components/Main";
-import Header from "../components/Header";
+import Nav from "../../components/user/Nav";
+import Main from "../../components/Main";
+import Header from "../../components/Header";
 
 // ----------------------------------------------------------------------
 
