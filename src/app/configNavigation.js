@@ -33,6 +33,20 @@ const navConfig = [
     path: "#",
     icon: icon("ic_order"),
     id: 3,
+    subItem: [
+      {
+        title: "list orders",
+        path: "#",
+        icon: icon("ic_orderlist"),
+        id: 0,
+      },
+      {
+        title: "order details",
+        path: "#",
+        icon: icon("ic_productdetail"),
+        id: 1,
+      },
+    ],
   },
 ];
 
