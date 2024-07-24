@@ -11,10 +11,16 @@ const icon = (name) => (
 
 const navConfig = [
   {
+    title: "dashboard",
+    path: "#",
+    icon: icon("ic_analytics"),
+    id: 0,
+  },
+  {
     title: "product",
     path: "#",
     icon: icon("ic_cart"),
-    id: 0,
+    id: 1,
     subItem: [
       {
         title: "list products",
@@ -37,28 +43,10 @@ const navConfig = [
     ],
   },
   {
-    title: "account",
-    path: "#",
-    icon: icon("ic_user"),
-    id: 1,
-  },
-  {
-    title: "setting",
-    path: "#",
-    icon: icon("ic_setting"),
-    id: 2,
-  },
-  {
-    title: "dashboard",
-    path: "#",
-    icon: icon("ic_analytics"),
-    id: 3,
-  },
-  {
     title: "order",
     path: "#",
     icon: icon("ic_order"),
-    id: 4,
+    id: 2,
     subItem: [
       {
         title: "list orders",
@@ -78,7 +66,7 @@ const navConfig = [
     title: "customer",
     path: "#",
     icon: icon("ic_customer"),
-    id: 5,
+    id: 3,
     subItem: [
       {
         title: "list customers",
@@ -93,6 +81,18 @@ const navConfig = [
         id: 1,
       },
     ],
+  },
+  {
+    title: "account",
+    path: "#",
+    icon: icon("ic_user"),
+    id: 4,
+  },
+  {
+    title: "setting",
+    path: "#",
+    icon: icon("ic_setting"),
+    id: 5,
   },
 ];
 

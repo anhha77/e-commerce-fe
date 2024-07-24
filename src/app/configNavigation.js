@@ -17,22 +17,10 @@ const navConfig = [
     id: 0,
   },
   {
-    title: "account",
-    path: "#",
-    icon: icon("ic_user"),
-    id: 1,
-  },
-  {
-    title: "setting",
-    path: "#",
-    icon: icon("ic_setting"),
-    id: 2,
-  },
-  {
     title: "order",
     path: "#",
     icon: icon("ic_order"),
-    id: 3,
+    id: 1,
     subItem: [
       {
         title: "list orders",
@@ -47,6 +35,18 @@ const navConfig = [
         id: 1,
       },
     ],
+  },
+  {
+    title: "account",
+    path: "#",
+    icon: icon("ic_user"),
+    id: 2,
+  },
+  {
+    title: "setting",
+    path: "#",
+    icon: icon("ic_setting"),
+    id: 3,
   },
 ];
 
