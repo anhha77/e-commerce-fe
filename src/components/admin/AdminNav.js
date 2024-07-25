@@ -151,19 +151,14 @@ AdminNav.propTypes = {
 // ----------------------------------------------------------------------
 
 function NavItem({ item, id }) {
-  const urlParams = new URLSearchParams(window.location.search);
-  const idx = urlParams.get("id");
-  let active = null;
-  if (idx === null && item.id === 0) {
-    active = true;
-  } else {
-    active = item.id === parseInt(idx);
-  }
+  const pathname = usePathname();
+
+  const active = item.path === pathname;
 
   return (
     <ListItemButton
       component={RouterLink}
-      to={`/admin?id=${id}`}
+      to={`${item.path}`}
       sx={{
         minHeight: 44,
         borderRadius: 0.75,
@@ -195,20 +190,13 @@ function NestedNavItem({ item, subItem, id }) {
 
   const handleSubNav = () => setOpen(!open);
 
-  const urlParams = new URLSearchParams(window.location.search);
-  const idx = urlParams.get("id");
-  let active = null;
-  if (idx === null && item.id === 0) {
-    active = true;
-  } else {
-    active = item.id === parseInt(idx);
-  }
+  const pathname = usePathname();
+
+  const active = item.path === pathname;
 
   return (
     <>
       <ListItemButton
-        component={RouterLink}
-        to={`/admin?id=${id}`}
         sx={{
           minHeight: 44,
           borderRadius: 0.75,
@@ -217,14 +205,14 @@ function NestedNavItem({ item, subItem, id }) {
           textTransform: "capitalize",
           justifyContent: "space-between",
           fontWeight: "fontWeightMedium",
-          ...(active && {
-            color: "primary.main",
-            fontWeight: "fontWeightSemiBold",
-            bgcolor: (theme) => alpha(theme.palette.primary.main, 0.08),
-            "&:hover": {
-              bgcolor: (theme) => alpha(theme.palette.primary.main, 0.16),
-            },
-          }),
+          // ...(active && {
+          //   color: "primary.main",
+          //   fontWeight: "fontWeightSemiBold",
+          //   bgcolor: (theme) => alpha(theme.palette.primary.main, 0.08),
+          //   "&:hover": {
+          //     bgcolor: (theme) => alpha(theme.palette.primary.main, 0.16),
+          //   },
+          // }),
         }}
         onClick={handleSubNav}
       >
@@ -241,6 +229,8 @@ function NestedNavItem({ item, subItem, id }) {
       <Collapse in={open} timeout="auto" unmountOnExit>
         {subItem.map((subItem, index) => (
           <ListItemButton
+            component={RouterLink}
+            to={`${subItem.path}`}
             sx={{
               minHeight: 44,
               borderRadius: 0.75,

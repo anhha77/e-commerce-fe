@@ -6,27 +6,27 @@ import Card from "@mui/material/Card";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
-import { FormProvider, FTextField } from "../components/form";
+import { FormProvider, FTextField } from "../../components/form";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { alpha, useTheme } from "@mui/material/styles";
 import InputAdornment from "@mui/material/InputAdornment";
 
-import { bgGradient } from "../theme/css";
+import { bgGradient } from "../../theme/css";
 
-import Logo from "../components/Logo";
-import Iconify from "../components/Iconify";
+import Logo from "../../components/Logo";
+import Iconify from "../../components/Iconify";
 
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
-import useAuth from "../hooks/useAuth";
+import useAuth from "../../hooks/useAuth";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Alert } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
-import UserLogo from "../components/UserLogo";
-import UserPopover from "../components/UserPopover";
+import UserLogo from "../../components/UserLogo";
+import UserPopover from "../../components/UserPopover";
 
 // ----------------------------------------------------------------------
 

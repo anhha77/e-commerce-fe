@@ -8,10 +8,12 @@ import AuthRequire from "./AuthRequire";
 import useAuth from "../hooks/useAuth";
 import HomePage from "../pages/HomePage";
 import NotFoundPage from "../pages/NotFoundPage";
-import AdminLoginPage from "../pages/AdminLoginPage";
-import AdminHomePage from "../pages/AdminHomePage";
+import AdminLoginPage from "../pages/admin/AdminLoginPage";
+import AdminHomePage from "../pages/admin/AdminHomePage";
 import RoleRequire from "./RoleRequire";
 import AdminMainLayout from "../layouts/admin/AdminMainLayout";
+import CustomersPage from "../pages/admin/CustomersPage";
+import CreateCustomersPage from "../pages/admin/CreateCustomerPage";
 
 export default function Router() {
   const location = useLocation();
@@ -42,6 +44,8 @@ export default function Router() {
           }
         >
           <Route index element={<AdminHomePage />} />
+          <Route path="users" element={<CustomersPage />} />
+          <Route path="create_user" element={<CreateCustomersPage />} />
         </Route>
 
         <Route element={<BlankLayout />}>

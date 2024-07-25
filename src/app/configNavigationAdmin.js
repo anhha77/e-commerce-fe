@@ -34,12 +34,6 @@ const navConfig = [
         icon: icon("ic_addproduct"),
         id: 1,
       },
-      {
-        title: "product details",
-        path: "#",
-        icon: icon("ic_productdetail"),
-        id: 2,
-      },
     ],
   },
   {
@@ -55,7 +49,7 @@ const navConfig = [
         id: 0,
       },
       {
-        title: "order details",
+        title: "create order",
         path: "#",
         icon: icon("ic_productdetail"),
         id: 1,
@@ -70,13 +64,13 @@ const navConfig = [
     subItem: [
       {
         title: "list customers",
-        path: "#",
+        path: "/admin/users",
         icon: icon("ic_customerlist"),
         id: 0,
       },
       {
-        title: "customer details",
-        path: "#",
+        title: "create customer",
+        path: "/admin/create_user",
         icon: icon("ic_customerdetail"),
         id: 1,
       },
