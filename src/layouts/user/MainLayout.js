@@ -5,6 +5,7 @@ import Box from "@mui/material/Box";
 import Nav from "../../components/user/Nav";
 import Main from "../../components/Main";
 import Header from "../../components/Header";
+import AlertMsg from "../../components/AlertMsg";
 
 // ----------------------------------------------------------------------
 
@@ -14,7 +15,7 @@ export default function MainLayout() {
   return (
     <>
       <Header onOpenNav={() => setOpenNav(true)} />
-
+      <AlertMsg />
       <Box
         sx={{
           minHeight: 1,
