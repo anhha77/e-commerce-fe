@@ -24,6 +24,7 @@ import Scrollbar from "../scrollbar";
 import { NAV } from "../../app/configLayout";
 import navConfig from "../../app/configNavigationAdmin";
 import { Collapse } from "@mui/material";
+import useAuth from "../../hooks/useAuth";
 
 // ----------------------------------------------------------------------
 
@@ -151,6 +152,7 @@ AdminNav.propTypes = {
 // ----------------------------------------------------------------------
 
 function NavItem({ item, id }) {
+  const { user } = useAuth();
   const pathname = usePathname();
 
   const active = item.path === pathname;
@@ -158,7 +160,9 @@ function NavItem({ item, id }) {
   return (
     <ListItemButton
       component={RouterLink}
-      to={`${item.path}`}
+      to={`${
+        item.title === "account" ? `${item.path}/${user._id}` : `${item.path}`
+      }`}
       sx={{
         minHeight: 44,
         borderRadius: 0.75,
@@ -166,14 +170,14 @@ function NavItem({ item, id }) {
         color: "text.secondary",
         textTransform: "capitalize",
         fontWeight: "fontWeightMedium",
-        ...(active && {
-          color: "primary.main",
-          fontWeight: "fontWeightSemiBold",
-          bgcolor: (theme) => alpha(theme.palette.primary.main, 0.08),
-          "&:hover": {
-            bgcolor: (theme) => alpha(theme.palette.primary.main, 0.16),
-          },
-        }),
+        // ...(active && {
+        //   color: "primary.main",
+        //   fontWeight: "fontWeightSemiBold",
+        //   bgcolor: (theme) => alpha(theme.palette.primary.main, 0.08),
+        //   "&:hover": {
+        //     bgcolor: (theme) => alpha(theme.palette.primary.main, 0.16),
+        //   },
+        // }),
       }}
     >
       <Box component="span" sx={{ width: 24, height: 24, mr: 2 }}>

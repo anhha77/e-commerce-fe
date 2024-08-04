@@ -24,6 +24,7 @@ import Scrollbar from "../scrollbar";
 import { NAV } from "../../app/configLayout";
 import navConfig from "../../app/configNavigation";
 import { Collapse } from "@mui/material";
+import useAuth from "../../hooks/useAuth";
 
 // ----------------------------------------------------------------------
 
@@ -147,19 +148,17 @@ Nav.propTypes = {
 // ----------------------------------------------------------------------
 
 function NavItem({ item, id }) {
-  const urlParams = new URLSearchParams(window.location.search);
-  const idx = urlParams.get("id");
-  let active = null;
-  if (idx === null && item.id === 0) {
-    active = true;
-  } else {
-    active = item.id === parseInt(idx);
-  }
+  const { user } = useAuth();
+  const pathname = usePathname();
+
+  const active = item.path === pathname;
 
   return (
     <ListItemButton
       component={RouterLink}
-      to={`/?id=${id}`}
+      to={`${
+        item.title === "account" ? `${item.path}/${user._id}` : `${item.path}`
+      }`}
       sx={{
         minHeight: 44,
         borderRadius: 0.75,
@@ -167,14 +166,14 @@ function NavItem({ item, id }) {
         color: "text.secondary",
         textTransform: "capitalize",
         fontWeight: "fontWeightMedium",
-        ...(active && {
-          color: "primary.main",
-          fontWeight: "fontWeightSemiBold",
-          bgcolor: (theme) => alpha(theme.palette.primary.main, 0.08),
-          "&:hover": {
-            bgcolor: (theme) => alpha(theme.palette.primary.main, 0.16),
-          },
-        }),
+        // ...(active && {
+        //   color: "primary.main",
+        //   fontWeight: "fontWeightSemiBold",
+        //   bgcolor: (theme) => alpha(theme.palette.primary.main, 0.08),
+        //   "&:hover": {
+        //     bgcolor: (theme) => alpha(theme.palette.primary.main, 0.16),
+        //   },
+        // }),
       }}
     >
       <Box component="span" sx={{ width: 24, height: 24, mr: 2 }}>
@@ -191,15 +190,9 @@ function NestedNavItem({ item, subItem, id }) {
 
   const handleSubNav = () => setOpen(!open);
 
-  const urlParams = new URLSearchParams(window.location.search);
-  const idx = urlParams.get("id");
-  let active = null;
-  if (idx === null && item.id === 0) {
-    active = true;
-  } else {
-    active = item.id === parseInt(idx);
-  }
+  const pathname = usePathname();
 
+  const active = item.path === pathname;
   return (
     <>
       <ListItemButton
@@ -213,14 +206,14 @@ function NestedNavItem({ item, subItem, id }) {
           textTransform: "capitalize",
           justifyContent: "space-between",
           fontWeight: "fontWeightMedium",
-          ...(active && {
-            color: "primary.main",
-            fontWeight: "fontWeightSemiBold",
-            bgcolor: (theme) => alpha(theme.palette.primary.main, 0.08),
-            "&:hover": {
-              bgcolor: (theme) => alpha(theme.palette.primary.main, 0.16),
-            },
-          }),
+          // ...(active && {
+          //   color: "primary.main",
+          //   fontWeight: "fontWeightSemiBold",
+          //   bgcolor: (theme) => alpha(theme.palette.primary.main, 0.08),
+          //   "&:hover": {
+          //     bgcolor: (theme) => alpha(theme.palette.primary.main, 0.16),
+          //   },
+          // }),
         }}
         onClick={handleSubNav}
       >
