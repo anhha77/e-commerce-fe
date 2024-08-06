@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import {
   Box,
   Grid,
@@ -8,8 +8,16 @@ import {
   CardHeader,
   CardContent,
   Button,
+  IconButton,
+  Popover,
+  Paper,
+  MenuList,
+  MenuItem,
+  ListItemIcon,
+  ListItemText,
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
+import Chip from "@mui/material/Chip";
 import useAuth from "../../hooks/useAuth";
 
 import { useForm } from "react-hook-form";
@@ -23,6 +31,10 @@ import { fireBaseExtension, fireBaseUpload } from "../../utils/firebase";
 
 import SecurityIcon from "@mui/icons-material/Security";
 import AddIcon from "@mui/icons-material/Add";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import StarIcon from "@mui/icons-material/Star";
+import ModeEditIcon from "@mui/icons-material/ModeEdit";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const phoneRegExp =
   /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
@@ -66,6 +78,15 @@ const addressTestList = [
 function BasicDetail() {
   const { user } = useAuth();
   const isLoading = useSelector((state) => state.profile.isLoading);
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   const defaultValues = {
     avatarUrl: user?.avatarUrl || "",
@@ -112,6 +133,55 @@ function BasicDetail() {
       }
     },
     [setValue]
+  );
+
+  const renderContent = (
+    <Popover
+      open={Boolean(anchorEl)}
+      anchorEl={anchorEl}
+      onClose={handleClose}
+      anchorOrigin={{
+        vertical: "bottom",
+        horizontal: "left",
+      }}
+    >
+      <Paper sx={{ width: 200, maxWidth: "100%" }}>
+        <MenuList onClick={handleClose}>
+          <MenuItem>
+            <Stack direction="row" justifyContent="space-between">
+              <ListItemIcon>
+                <StarIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Set as default</ListItemText>
+            </Stack>
+          </MenuItem>
+        </MenuList>
+
+        <MenuList onClick={handleClose}>
+          <MenuItem>
+            <Stack direction="row" justifyContent="space-between">
+              <ListItemIcon>
+                <ModeEditIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>Edit</ListItemText>
+            </Stack>
+          </MenuItem>
+        </MenuList>
+
+        <MenuList onClick={handleClose}>
+          <MenuItem>
+            <Stack direction="row" justifyContent="space-between">
+              <ListItemIcon>
+                <DeleteIcon fontSize="small" color="error" />
+              </ListItemIcon>
+              <ListItemText sx={{ color: (theme) => theme.palette.error.main }}>
+                Delete
+              </ListItemText>
+            </Stack>
+          </MenuItem>
+        </MenuList>
+      </Paper>
+    </Popover>
   );
 
   return (
@@ -214,7 +284,66 @@ function BasicDetail() {
                 }
               />
               <CardContent>
-                <Stack></Stack>
+                <Stack spacing={2}>
+                  {addressTestList.map((item) => (
+                    <Card key={item.phoneNumber}>
+                      <CardHeader
+                        title={
+                          <Box>
+                            {item.country}
+                            {item.isDefault ? (
+                              <Chip
+                                label="Default"
+                                sx={{
+                                  marginLeft: "10px",
+                                  backgroundColor: (theme) =>
+                                    theme.palette.info.lighter,
+                                  color: (theme) => theme.palette.info.dark,
+                                  borderRadius: "5px",
+                                  px: "3px",
+                                  height: "24px",
+                                  fontSize: "0.75rem",
+                                }}
+                              />
+                            ) : null}
+                          </Box>
+                        }
+                        action={
+                          <IconButton
+                            aria-label="settings"
+                            onClick={handleOpen}
+                          >
+                            <MoreVertIcon />
+                          </IconButton>
+                        }
+                        titleTypographyProps={{
+                          variant: "h6",
+                        }}
+                      />
+                      {renderContent}
+                      <CardContent>
+                        <Stack spacing={1}>
+                          <Typography
+                            sx={{
+                              color: (theme) => theme.palette.text.secondary,
+                            }}
+                            noWrap
+                          >
+                            {item.address}
+                          </Typography>
+                          <Typography
+                            sx={{
+                              color: (theme) => theme.palette.text.secondary,
+                            }}
+                            noWrap
+                          >
+                            {item.phoneNumber}
+                          </Typography>
+                        </Stack>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </Stack>
               </CardContent>
             </Card>
           </Stack>
