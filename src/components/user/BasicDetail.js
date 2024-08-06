@@ -33,8 +33,35 @@ const UpdateUserSchema = yup.object().shape({
     .string()
     .required("Phone number is required")
     .matches(phoneRegExp, "Phone number is invalid"),
-  address: yup.string().required("Address is required"),
+  // address: yup.string().required("Address is required"),
 });
+
+const addressTestList = [
+  {
+    country: "VN",
+    address: "19034 Verna Unions Apt. 164 - Honolulu, RI / 87535",
+    phoneNumber: "+1 202-555-0143",
+    isDefault: true,
+  },
+  {
+    country: "VN",
+    address: "1147 Rohan Drive Suite 819 - Burlington, VT / 82021",
+    phoneNumber: "+1 416-555-0198",
+    isDefault: false,
+  },
+  {
+    country: "VN",
+    address: "18605 Thompson Circle Apt. 086 - Idaho Falls, WV / 50337",
+    phoneNumber: "+44 20 7946 0958",
+    isDefault: false,
+  },
+  {
+    country: "VN",
+    address: "110 Lamar Station Apt. 730 - Hagerstown, OK / 49808",
+    phoneNumber: "+61 2 9876 5432",
+    isDefault: false,
+  },
+];
 
 function BasicDetail() {
   const { user } = useAuth();
@@ -67,7 +94,7 @@ function BasicDetail() {
     // dispatch(updateProfile());
     const url = await fireBaseUpload(
       fireBaseExtension,
-      data.avatarUrl.name,
+      "avatar",
       data.avatarUrl
     );
     console.log(url);
@@ -186,6 +213,9 @@ function BasicDetail() {
                   </Button>
                 }
               />
+              <CardContent>
+                <Stack></Stack>
+              </CardContent>
             </Card>
           </Stack>
         </Grid>
