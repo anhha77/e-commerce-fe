@@ -40,12 +40,10 @@ const phoneRegExp =
   /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 
 const UpdateUserSchema = yup.object().shape({
-  username: yup.string().required("Username is required"),
   phoneNumber: yup
     .string()
     .required("Phone number is required")
     .matches(phoneRegExp, "Phone number is invalid"),
-  // address: yup.string().required("Address is required"),
 });
 
 const addressTestList = [
@@ -257,7 +255,7 @@ function BasicDetail() {
                   },
                 }}
               >
-                <FTextField name="username" label="Username" />
+                <FTextField name="username" label="Username" disabled />
                 <FTextField name="email" label="Email" disabled />
                 <FTextField name="role" label="Role" disabled />
                 <FTextField name="birthOfDate" label="Birthdate" />
