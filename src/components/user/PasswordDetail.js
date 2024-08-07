@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { FormProvider, FTextField } from "../../components/form";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Card,
   CardContent,
@@ -12,8 +12,8 @@ import {
   Stack,
 } from "@mui/material";
 
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import Iconify from "../Iconify";
+import { LoadingButton } from "@mui/lab";
 
 const validatePassword = yup.object().shape({
   oldPassword: yup.string().required("Password is required"),
@@ -40,6 +40,8 @@ function PasswordDetail() {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
 
+  const { isLoading } = useSelector((state) => state.profile);
+
   const methods = useForm({
     resolver: yupResolver(validatePassword),
     defaultValues,
@@ -60,19 +62,28 @@ function PasswordDetail() {
     <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
       <Card>
         <CardContent>
-          <Stack spacing={3}>
+          <Stack spacing={3} alignItems="flex-end">
             <FTextField
               name="oldPassword"
               label="Old Password"
               fullWidth
               type={showPassword ? "text" : "password"}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton onClick={(prev) => setShowPassword(!prev)}>
-                    {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
-                  </IconButton>
-                </InputAdornment>
-              }
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() => setShowPassword(!showPassword)}
+                      edge="end"
+                    >
+                      <Iconify
+                        icon={
+                          showPassword ? "eva:eye-fill" : "eva:eye-off-fill"
+                        }
+                      />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
 
             <FTextField
@@ -80,17 +91,22 @@ function PasswordDetail() {
               label="New Password"
               fullWidth
               type={showNewPassword ? "text" : "password"}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton onClick={(prev) => setShowNewPassword(!prev)}>
-                    {showNewPassword ? (
-                      <VisibilityOffIcon />
-                    ) : (
-                      <VisibilityIcon />
-                    )}
-                  </IconButton>
-                </InputAdornment>
-              }
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() => setShowNewPassword(!showNewPassword)}
+                      edge="end"
+                    >
+                      <Iconify
+                        icon={
+                          showNewPassword ? "eva:eye-fill" : "eva:eye-off-fill"
+                        }
+                      />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
 
             <FTextField
@@ -98,20 +114,34 @@ function PasswordDetail() {
               label="Confirm New Password"
               fullWidth
               type={showConfirmNewPassword ? "text" : "password"}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    onClick={(prev) => setShowConfirmNewPassword(!prev)}
-                  >
-                    {showConfirmNewPassword ? (
-                      <VisibilityOffIcon />
-                    ) : (
-                      <VisibilityIcon />
-                    )}
-                  </IconButton>
-                </InputAdornment>
-              }
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() =>
+                        setShowConfirmNewPassword(!showConfirmNewPassword)
+                      }
+                      edge="end"
+                    >
+                      <Iconify
+                        icon={
+                          showConfirmNewPassword
+                            ? "eva:eye-fill"
+                            : "eva:eye-off-fill"
+                        }
+                      />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
+            <LoadingButton
+              type="submit"
+              variant="contained"
+              loading={isSubmitting || isLoading}
+            >
+              Save Changes
+            </LoadingButton>
           </Stack>
         </CardContent>
       </Card>
