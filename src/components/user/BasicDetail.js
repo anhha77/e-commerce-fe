@@ -28,6 +28,7 @@ import { fData } from "../../utils/numeralFormat";
 import { useDispatch, useSelector } from "react-redux";
 import { updateProfile } from "../../features/profileSlice";
 import { fireBaseExtension, fireBaseUpload } from "../../utils/firebase";
+import AddressDialog from "./AddressDialog";
 
 import SecurityIcon from "@mui/icons-material/Security";
 import AddIcon from "@mui/icons-material/Add";
@@ -76,7 +77,21 @@ const addressTestList = [
 function BasicDetail() {
   const { user } = useAuth();
   const isLoading = useSelector((state) => state.profile.isLoading);
+  const [open, setOpen] = useState(Array(addressTestList.length).fill(false));
   const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleOpenDialog = (index) => {
+    const newOpen = open.map((item, i) => {
+      if (index === i) return true;
+      return false;
+    });
+    setOpen(newOpen);
+    setAnchorEl(null);
+  };
+
+  const handleCloseDialog = () => {
+    setOpen(Array(addressTestList.length).fill(false));
+  };
 
   const handleOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -91,7 +106,6 @@ function BasicDetail() {
     username: user?.username || "",
     email: user?.email || "",
     phoneNumber: user?.phoneNumber || "",
-    address: user?.address || "",
     birthOfDate: user?.birthOfDate || "",
     role: user?.role || "",
   };
@@ -155,7 +169,7 @@ function BasicDetail() {
           </MenuItem>
         </MenuList>
 
-        <MenuList onClick={handleClose}>
+        <MenuList onClick={handleOpenDialog}>
           <MenuItem>
             <Stack direction="row" justifyContent="space-between">
               <ListItemIcon>
@@ -283,7 +297,7 @@ function BasicDetail() {
               />
               <CardContent>
                 <Stack spacing={2}>
-                  {addressTestList.map((item) => (
+                  {addressTestList.map((item, index) => (
                     <Card key={item.phoneNumber}>
                       <CardHeader
                         title={
@@ -319,6 +333,11 @@ function BasicDetail() {
                         }}
                       />
                       {renderContent}
+                      <AddressDialog
+                        open={open}
+                        index={index}
+                        handleClose={handleCloseDialog}
+                      />
                       <CardContent>
                         <Stack spacing={1}>
                           <Typography
