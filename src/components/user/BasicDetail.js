@@ -8,16 +8,8 @@ import {
   CardHeader,
   CardContent,
   Button,
-  IconButton,
-  Popover,
-  Paper,
-  MenuList,
-  MenuItem,
-  ListItemIcon,
-  ListItemText,
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
-import Chip from "@mui/material/Chip";
 import useAuth from "../../hooks/useAuth";
 
 import { useForm } from "react-hook-form";
@@ -28,14 +20,10 @@ import { fData } from "../../utils/numeralFormat";
 import { useDispatch, useSelector } from "react-redux";
 import { updateProfile } from "../../features/profileSlice";
 import { fireBaseExtension, fireBaseUpload } from "../../utils/firebase";
-import AddressDialog from "./AddressDialog";
 
 import SecurityIcon from "@mui/icons-material/Security";
 import AddIcon from "@mui/icons-material/Add";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import StarIcon from "@mui/icons-material/Star";
-import ModeEditIcon from "@mui/icons-material/ModeEdit";
-import DeleteIcon from "@mui/icons-material/Delete";
+import CardAddress from "./CardAddress";
 
 const phoneRegExp =
   /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
@@ -77,29 +65,7 @@ const addressTestList = [
 function BasicDetail() {
   const { user } = useAuth();
   const isLoading = useSelector((state) => state.profile.isLoading);
-  const [open, setOpen] = useState(Array(addressTestList.length).fill(false));
-  const [anchorEl, setAnchorEl] = useState(null);
-
-  const handleOpenDialog = (index) => {
-    const newOpen = open.map((item, i) => {
-      if (index === i) return true;
-      return false;
-    });
-    setOpen(newOpen);
-    setAnchorEl(null);
-  };
-
-  const handleCloseDialog = () => {
-    setOpen(Array(addressTestList.length).fill(false));
-  };
-
-  const handleOpen = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+  const [addressClickIndex, setAddressClickIndex] = useState(null);
 
   const defaultValues = {
     avatarUrl: user?.avatarUrl || "",
@@ -145,55 +111,6 @@ function BasicDetail() {
       }
     },
     [setValue]
-  );
-
-  const renderContent = (index) => (
-    <Popover
-      open={Boolean(anchorEl)}
-      anchorEl={anchorEl}
-      onClose={handleClose}
-      anchorOrigin={{
-        vertical: "bottom",
-        horizontal: "left",
-      }}
-    >
-      <Paper sx={{ width: 200, maxWidth: "100%" }}>
-        <MenuList onClick={handleClose}>
-          <MenuItem>
-            <Stack direction="row" justifyContent="space-between">
-              <ListItemIcon>
-                <StarIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Set as default</ListItemText>
-            </Stack>
-          </MenuItem>
-        </MenuList>
-
-        <MenuList onClick={() => handleOpenDialog(index)}>
-          <MenuItem>
-            <Stack direction="row" justifyContent="space-between">
-              <ListItemIcon>
-                <ModeEditIcon fontSize="small" />
-              </ListItemIcon>
-              <ListItemText>Edit</ListItemText>
-            </Stack>
-          </MenuItem>
-        </MenuList>
-
-        <MenuList onClick={handleClose}>
-          <MenuItem>
-            <Stack direction="row" justifyContent="space-between">
-              <ListItemIcon>
-                <DeleteIcon fontSize="small" color="error" />
-              </ListItemIcon>
-              <ListItemText sx={{ color: (theme) => theme.palette.error.main }}>
-                Delete
-              </ListItemText>
-            </Stack>
-          </MenuItem>
-        </MenuList>
-      </Paper>
-    </Popover>
   );
 
   return (
@@ -298,68 +215,7 @@ function BasicDetail() {
               <CardContent>
                 <Stack spacing={2}>
                   {addressTestList.map((item, index) => (
-                    <Card key={item.phoneNumber}>
-                      <CardHeader
-                        title={
-                          <Box>
-                            {item.country}
-                            {item.isDefault ? (
-                              <Chip
-                                label="Default"
-                                sx={{
-                                  marginLeft: "10px",
-                                  backgroundColor: (theme) =>
-                                    theme.palette.info.lighter,
-                                  color: (theme) => theme.palette.info.dark,
-                                  borderRadius: "5px",
-                                  px: "3px",
-                                  height: "24px",
-                                  fontSize: "0.75rem",
-                                }}
-                              />
-                            ) : null}
-                          </Box>
-                        }
-                        action={
-                          <IconButton
-                            aria-label="settings"
-                            onClick={handleOpen}
-                          >
-                            <MoreVertIcon />
-                          </IconButton>
-                        }
-                        titleTypographyProps={{
-                          variant: "h6",
-                        }}
-                      />
-                      {renderContent(index)}
-
-                      <CardContent>
-                        <Stack spacing={1}>
-                          <Typography
-                            sx={{
-                              color: (theme) => theme.palette.text.secondary,
-                            }}
-                            noWrap
-                          >
-                            {item.address}
-                          </Typography>
-                          <Typography
-                            sx={{
-                              color: (theme) => theme.palette.text.secondary,
-                            }}
-                            noWrap
-                          >
-                            {item.phoneNumber}
-                          </Typography>
-                        </Stack>
-                      </CardContent>
-                      <AddressDialog
-                        open={open[index]}
-                        index={index}
-                        handleClose={handleCloseDialog}
-                      />
-                    </Card>
+                    <CardAddress key={index} item={item} index={index} />
                   ))}
                 </Stack>
               </CardContent>

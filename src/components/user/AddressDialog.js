@@ -6,7 +6,6 @@ import {
   InputAdornment,
   Slide,
   Stack,
-  Typography,
 } from "@mui/material";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -60,10 +59,13 @@ function AddressDialog({ open, index, handleClose }) {
   return (
     <Dialog
       open={Boolean(open)}
-      TransitionComponent={Transition}
+      // TransitionComponent={Transition}
       onClose={handleClose}
     >
-      <DialogTitle>{"Address Edit"}</DialogTitle>
+      <DialogTitle>
+        {"Address Edit"}
+        {index}
+      </DialogTitle>
       <DialogContent>
         <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
           <Stack spacing={3} sx={{ minWidth: 500, mt: 1 }}>
@@ -111,6 +113,7 @@ function AddressDialog({ open, index, handleClose }) {
           type="submit"
           variant="contained"
           loading={isSubmitting || isLoading}
+          onClick={handleClose}
         >
           Save Changes
         </LoadingButton>
