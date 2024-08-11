@@ -66,7 +66,7 @@ function AddressDialog({ open, index, handleClose }) {
       <DialogTitle>{"Address Edit"}</DialogTitle>
       <DialogContent>
         <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-          <Stack spacing={3} sx={{ minWidth: 500 }}>
+          <Stack spacing={3} sx={{ minWidth: 500, mt: 1 }}>
             <FTextField
               name="country"
               label="Country"

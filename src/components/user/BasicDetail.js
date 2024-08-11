@@ -147,7 +147,7 @@ function BasicDetail() {
     [setValue]
   );
 
-  const renderContent = (
+  const renderContent = (index) => (
     <Popover
       open={Boolean(anchorEl)}
       anchorEl={anchorEl}
@@ -169,7 +169,7 @@ function BasicDetail() {
           </MenuItem>
         </MenuList>
 
-        <MenuList onClick={handleOpenDialog}>
+        <MenuList onClick={() => handleOpenDialog(index)}>
           <MenuItem>
             <Stack direction="row" justifyContent="space-between">
               <ListItemIcon>
@@ -332,12 +332,8 @@ function BasicDetail() {
                           variant: "h6",
                         }}
                       />
-                      {renderContent}
-                      <AddressDialog
-                        open={open}
-                        index={index}
-                        handleClose={handleCloseDialog}
-                      />
+                      {renderContent(index)}
+
                       <CardContent>
                         <Stack spacing={1}>
                           <Typography
@@ -358,6 +354,11 @@ function BasicDetail() {
                           </Typography>
                         </Stack>
                       </CardContent>
+                      <AddressDialog
+                        open={open[index]}
+                        index={index}
+                        handleClose={handleCloseDialog}
+                      />
                     </Card>
                   ))}
                 </Stack>
