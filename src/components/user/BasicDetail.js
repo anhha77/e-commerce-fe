@@ -18,8 +18,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { FormProvider, FTextField, FUploadAvatar } from "../../components/form";
 import { fData } from "../../utils/numeralFormat";
 import { useDispatch, useSelector } from "react-redux";
-import { updateProfile } from "../../features/profileSlice";
-import { fireBaseExtension, fireBaseUpload } from "../../utils/firebase";
+import { updateUserProfile } from "../../features/profileSlice";
 
 import SecurityIcon from "@mui/icons-material/Security";
 import AddIcon from "@mui/icons-material/Add";
@@ -65,7 +64,6 @@ const addressTestList = [
 function BasicDetail() {
   const { user } = useAuth();
   const isLoading = useSelector((state) => state.profile.isLoading);
-  const [addressClickIndex, setAddressClickIndex] = useState(null);
 
   const defaultValues = {
     avatarUrl: user?.avatarUrl || "",
@@ -90,13 +88,8 @@ function BasicDetail() {
   const dispatch = useDispatch();
 
   const onSubmit = async (data) => {
-    // dispatch(updateProfile());
-    const url = await fireBaseUpload(
-      fireBaseExtension,
-      "avatar",
-      data.avatarUrl
-    );
-    console.log(url);
+    console.log(data);
+    dispatch(updateUserProfile({ ...data }));
   };
 
   const handleDrop = useCallback(
@@ -214,7 +207,7 @@ function BasicDetail() {
               />
               <CardContent>
                 <Stack spacing={2}>
-                  {addressTestList.map((item, index) => (
+                  {user?.address.map((item, index) => (
                     <CardAddress key={index} item={item} index={index} />
                   ))}
                 </Stack>

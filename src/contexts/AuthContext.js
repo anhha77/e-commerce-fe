@@ -16,6 +16,7 @@ const REGISTER_SUCCESS = "AUTH.REGISTER_SUCCESS";
 const LOGOUT = "AUTH.LOGOUT";
 const LOGIN_AS_ADMIN = "LOGIN.ADMIN";
 const LOGIN_AS_USER = "LOGIN.USER";
+const UPDATE_PROFILE = "AUTH.UPDATE_PROFILE";
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -55,11 +56,25 @@ const reducer = (state, action) => {
         ...state,
         isLoginAsAdmin: true,
       };
-
     case LOGIN_AS_USER:
       return {
         ...state,
         isLoginAsAdmin: false,
+      };
+    case UPDATE_PROFILE:
+      const { _id, avatarUrl, birthOfDate, phoneNumber, address, cartItem } =
+        action.payload;
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          _id,
+          avatarUrl,
+          birthOfDate,
+          phoneNumber,
+          address,
+          cartItem,
+        },
       };
     default:
       return state;
@@ -80,6 +95,7 @@ const AuthContext = createContext({ ...initialState });
 
 function AuthProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const data = useSelector((state) => state.profile.updateProfile);
 
   useEffect(() => {
     const initialize = async () => {
@@ -112,6 +128,10 @@ function AuthProvider({ children }) {
     };
     initialize();
   }, []);
+
+  useEffect(() => {
+    if (data) dispatch({ type: UPDATE_PROFILE, payload: data });
+  }, [data]);
 
   const login = async ({ email, password }, callback) => {
     const response = await apiService.post("/auth/login", { email, password });

@@ -132,7 +132,7 @@ function CardAddress({ item, index }) {
             }}
             noWrap
           >
-            {item.address}
+            {item.addressLocation}
           </Typography>
           <Typography
             sx={{
@@ -144,11 +144,7 @@ function CardAddress({ item, index }) {
           </Typography>
         </Stack>
       </CardContent>
-      <AddressDialog
-        open={open}
-        index={index}
-        handleClose={handleCloseDialog}
-      />
+      <AddressDialog open={open} item={item} handleClose={handleCloseDialog} />
     </Card>
   );
 }

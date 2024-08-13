@@ -14,6 +14,7 @@ import {
 
 import Iconify from "../Iconify";
 import { LoadingButton } from "@mui/lab";
+import { updateUserProfile } from "../../features/profileSlice";
 
 const validatePassword = yup.object().shape({
   oldPassword: yup.string().required("Password is required"),
@@ -33,6 +34,7 @@ const validatePassword = yup.object().shape({
 const defaultValues = {
   oldPassword: "",
   newPassword: "",
+  confirmNewPassword: "",
 };
 
 function PasswordDetail() {
@@ -49,6 +51,7 @@ function PasswordDetail() {
 
   const {
     handleSubmit,
+    reset,
     formState: { isSubmitting },
   } = methods;
 
@@ -56,6 +59,7 @@ function PasswordDetail() {
 
   const onSubmit = (data) => {
     console.log(data);
+    dispatch(updateUserProfile({ ...data })).then(() => reset());
   };
 
   return (

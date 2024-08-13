@@ -19,6 +19,7 @@ import FlagIcon from "@mui/icons-material/Flag";
 import HomeIcon from "@mui/icons-material/Home";
 import ContactPhoneIcon from "@mui/icons-material/ContactPhone";
 import { LoadingButton } from "@mui/lab";
+import { updateUserProfile } from "../../features/profileSlice";
 
 const validateAddressForm = yup.object().shape({
   country: yup.string().required("Country is required"),
@@ -26,18 +27,16 @@ const validateAddressForm = yup.object().shape({
   phoneNumber: yup.string().required("Phone number is required"),
 });
 
-function AddressDialog({ open, index, handleClose }) {
-  const { user } = useAuth();
-  const address = user.address[index];
+function AddressDialog({ open, item, handleClose }) {
   const isLoading = useSelector((state) => state.profile.isLoading);
   const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="down" ref={ref} {...props} />;
   });
 
   const defaultValues = {
-    country: address?.country || "",
-    addressLocation: address?.addressLocation || "",
-    phoneNumber: address?.phoneNumber || "",
+    country: item.country || "",
+    addressLocation: item.addressLocation || "",
+    phoneNumber: item.phoneNumber || "",
   };
 
   const methods = useForm({
@@ -54,6 +53,7 @@ function AddressDialog({ open, index, handleClose }) {
 
   const onSubmit = (data) => {
     console.log(data);
+    // dispatch(updateUserProfile({ ...data }));
   };
 
   return (
@@ -62,10 +62,7 @@ function AddressDialog({ open, index, handleClose }) {
       // TransitionComponent={Transition}
       onClose={handleClose}
     >
-      <DialogTitle>
-        {"Address Edit"}
-        {index}
-      </DialogTitle>
+      <DialogTitle>{"Address Edit"}</DialogTitle>
       <DialogContent>
         <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
           <Stack spacing={3} sx={{ minWidth: 500, mt: 1 }}>
