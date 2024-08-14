@@ -144,7 +144,12 @@ function CardAddress({ item, index }) {
           </Typography>
         </Stack>
       </CardContent>
-      <AddressDialog open={open} item={item} handleClose={handleCloseDialog} />
+      <AddressDialog
+        open={open}
+        item={item}
+        index={index}
+        handleClose={handleCloseDialog}
+      />
     </Card>
   );
 }

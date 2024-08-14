@@ -23,6 +23,7 @@ import { updateUserProfile } from "../../features/profileSlice";
 import SecurityIcon from "@mui/icons-material/Security";
 import AddIcon from "@mui/icons-material/Add";
 import CardAddress from "./CardAddress";
+import CreateAddressForm from "./CreateAddressForm";
 
 const phoneRegExp =
   /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
@@ -34,36 +35,18 @@ const UpdateUserSchema = yup.object().shape({
     .matches(phoneRegExp, "Phone number is invalid"),
 });
 
-const addressTestList = [
-  {
-    country: "VN",
-    address: "19034 Verna Unions Apt. 164 - Honolulu, RI / 87535",
-    phoneNumber: "+1 202-555-0143",
-    isDefault: true,
-  },
-  {
-    country: "VN",
-    address: "1147 Rohan Drive Suite 819 - Burlington, VT / 82021",
-    phoneNumber: "+1 416-555-0198",
-    isDefault: false,
-  },
-  {
-    country: "VN",
-    address: "18605 Thompson Circle Apt. 086 - Idaho Falls, WV / 50337",
-    phoneNumber: "+44 20 7946 0958",
-    isDefault: false,
-  },
-  {
-    country: "VN",
-    address: "110 Lamar Station Apt. 730 - Hagerstown, OK / 49808",
-    phoneNumber: "+61 2 9876 5432",
-    isDefault: false,
-  },
-];
-
 function BasicDetail() {
   const { user } = useAuth();
   const isLoading = useSelector((state) => state.profile.isLoading);
+  const [open, setOpen] = useState(false);
+
+  const handleOpenDialog = () => {
+    setOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpen(false);
+  };
 
   const defaultValues = {
     avatarUrl: user?.avatarUrl || "",
@@ -87,7 +70,7 @@ function BasicDetail() {
 
   const dispatch = useDispatch();
 
-  const onSubmit = async (data) => {
+  const onSubmit = (data) => {
     console.log(data);
     dispatch(updateUserProfile({ ...data }));
   };
@@ -200,11 +183,16 @@ function BasicDetail() {
               <CardHeader
                 title="Address"
                 action={
-                  <Button variant="text" startIcon={<AddIcon />}>
+                  <Button
+                    variant="text"
+                    startIcon={<AddIcon />}
+                    onClick={handleOpenDialog}
+                  >
                     Address
                   </Button>
                 }
               />
+              <CreateAddressForm open={open} handleClose={handleCloseDialog} />
               <CardContent>
                 <Stack spacing={2}>
                   {user?.address.map((item, index) => (

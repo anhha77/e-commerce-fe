@@ -4,22 +4,21 @@ import {
   DialogContent,
   DialogTitle,
   InputAdornment,
-  Slide,
   Stack,
 } from "@mui/material";
-import React, { useState } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { FormProvider, FTextField } from "../../components/form";
-import useAuth from "../../hooks/useAuth";
-import { useDispatch, useSelector } from "react-redux";
+import { FormProvider, FTextField, FSwitch } from "../../components/form";
 
 import FlagIcon from "@mui/icons-material/Flag";
 import HomeIcon from "@mui/icons-material/Home";
 import ContactPhoneIcon from "@mui/icons-material/ContactPhone";
 import { LoadingButton } from "@mui/lab";
+import { useDispatch, useSelector } from "react-redux";
 import { updateUserProfile } from "../../features/profileSlice";
+import useAuth from "../../hooks/useAuth";
 
 const validateAddressForm = yup.object().shape({
   country: yup.string().required("Country is required"),
@@ -27,19 +26,17 @@ const validateAddressForm = yup.object().shape({
   phoneNumber: yup.string().required("Phone number is required"),
 });
 
-function AddressDialog({ open, item, index, handleClose }) {
+function CreateAddressForm({ open, handleClose }) {
   const { user } = useAuth();
   const isLoading = useSelector((state) => state.profile.isLoading);
-  const Transition = React.forwardRef(function Transition(props, ref) {
-    return <Slide direction="down" ref={ref} {...props} />;
-  });
 
   let addressList = user?.address;
 
   const defaultValues = {
-    country: item.country || "",
-    addressLocation: item.addressLocation || "",
-    phoneNumber: item.phoneNumber || "",
+    country: "",
+    addressLocation: "",
+    phoneNumber: "",
+    isDefault: false,
   };
 
   const methods = useForm({
@@ -49,16 +46,15 @@ function AddressDialog({ open, item, index, handleClose }) {
 
   const {
     handleSubmit,
+    reset,
     formState: { isSubmitting },
   } = methods;
 
   const dispatch = useDispatch();
 
   const onSubmit = (data) => {
-    addressList = addressList.map((item, i) =>
-      i === index ? { ...data, isDefault: item.isDefault } : item
-    );
-    dispatch(updateUserProfile({ address: addressList }));
+    addressList = [...addressList, data];
+    dispatch(updateUserProfile({ address: addressList })).then(() => reset());
   };
 
   return (
@@ -75,7 +71,7 @@ function AddressDialog({ open, item, index, handleClose }) {
           handleSubmit(onSubmit)();
         }}
       >
-        <DialogTitle>{"Address Edit"}</DialogTitle>
+        <DialogTitle>{"Add Address"}</DialogTitle>
         <DialogContent>
           <Stack spacing={3} sx={{ minWidth: 500, mt: 1 }}>
             <FTextField
@@ -116,19 +112,26 @@ function AddressDialog({ open, item, index, handleClose }) {
             />
           </Stack>
         </DialogContent>
-        <DialogActions>
-          <LoadingButton
-            type="submit"
-            variant="contained"
-            loading={isSubmitting || isLoading}
-            onClick={handleClose}
+        <DialogActions sx={{ justifyContent: "space-around" }}>
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            sx={{ width: "100%" }}
           >
-            Save Changes
-          </LoadingButton>
+            <FSwitch name="isDefault" label="Default" />
+            <LoadingButton
+              type="submit"
+              variant="contained"
+              loading={isSubmitting || isLoading}
+              onClick={handleClose}
+            >
+              Save Changes
+            </LoadingButton>
+          </Stack>
         </DialogActions>
       </FormProvider>
     </Dialog>
   );
 }
 
-export default AddressDialog;
+export default CreateAddressForm;
