@@ -127,7 +127,7 @@ function AuthProvider({ children }) {
       }
     };
     initialize();
-  }, []);
+  }, [data]);
 
   useEffect(() => {
     if (data) dispatch({ type: UPDATE_PROFILE, payload: data });
