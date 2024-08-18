@@ -67,20 +67,9 @@ export default function Nav({ openNav, onCloseNav }) {
 
   const renderMenu = (
     <Stack component="nav" spacing={0.5} sx={{ px: 2 }}>
-      {navConfig.map((item, index) => {
-        if (item.title === "order") {
-          return (
-            <NestedNavItem
-              key={item.title}
-              item={item}
-              id={index}
-              subItem={item.subItem}
-            />
-          );
-        } else {
-          return <NavItem key={item.title} item={item} id={index} />;
-        }
-      })}
+      {navConfig.map((item, index) => (
+        <NavItem key={item.title} item={item} id={index} />
+      ))}
     </Stack>
   );
 
@@ -156,9 +145,7 @@ function NavItem({ item, id }) {
   return (
     <ListItemButton
       component={RouterLink}
-      to={`${
-        item.title === "account" ? `${item.path}/${user._id}` : `${item.path}`
-      }`}
+      to={item.path}
       sx={{
         minHeight: 44,
         borderRadius: 0.75,
@@ -184,79 +171,6 @@ function NavItem({ item, id }) {
     </ListItemButton>
   );
 }
-
-function NestedNavItem({ item, subItem, id }) {
-  const [open, setOpen] = useState(false);
-
-  const handleSubNav = () => setOpen(!open);
-
-  const pathname = usePathname();
-
-  const active = item.path === pathname;
-  return (
-    <>
-      <ListItemButton
-        component={RouterLink}
-        to={`/?id=${id}`}
-        sx={{
-          minHeight: 44,
-          borderRadius: 0.75,
-          typography: "body2",
-          color: "text.secondary",
-          textTransform: "capitalize",
-          justifyContent: "space-between",
-          fontWeight: "fontWeightMedium",
-          // ...(active && {
-          //   color: "primary.main",
-          //   fontWeight: "fontWeightSemiBold",
-          //   bgcolor: (theme) => alpha(theme.palette.primary.main, 0.08),
-          //   "&:hover": {
-          //     bgcolor: (theme) => alpha(theme.palette.primary.main, 0.16),
-          //   },
-          // }),
-        }}
-        onClick={handleSubNav}
-      >
-        <Box sx={{ display: "flex", flexDirection: "row" }}>
-          <Box component="span" sx={{ width: 24, height: 24, mr: 2 }}>
-            {item.icon}
-          </Box>
-
-          <Box component="span">{item.title} </Box>
-        </Box>
-
-        {open ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-      </ListItemButton>
-      <Collapse in={open} timeout="auto" unmountOnExit>
-        {subItem.map((subItem, index) => (
-          <ListItemButton
-            sx={{
-              minHeight: 44,
-              borderRadius: 0.75,
-              typography: "body2",
-              color: "text.secondary",
-              textTransform: "capitalize",
-              fontWeight: "fontWeightMedium",
-            }}
-            key={subItem.title}
-          >
-            <Box sx={{ display: "flex", flexDirection: "row", ml: 3 }}>
-              <Box component="span" sx={{ width: 24, height: 24, mr: 2 }}>
-                {subItem.icon}
-              </Box>
-
-              <Box component="span">{subItem.title} </Box>
-            </Box>
-          </ListItemButton>
-        ))}
-      </Collapse>
-    </>
-  );
-}
-
-NestedNavItem.propTypes = {
-  item: PropTypes.object,
-};
 
 NavItem.propTypes = {
   item: PropTypes.object,

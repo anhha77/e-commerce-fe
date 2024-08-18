@@ -10,6 +10,7 @@ import MenuItem from "@mui/material/MenuItem";
 import TableCell from "@mui/material/TableCell";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
+import { Link as RouterLink } from "react-router-dom";
 
 import Label from "../label";
 import Iconify from "../Iconify";
@@ -17,6 +18,7 @@ import Iconify from "../Iconify";
 // ----------------------------------------------------------------------
 
 export default function UserTableRow({
+  id,
   username,
   email,
   phoneNumber,
@@ -49,7 +51,16 @@ export default function UserTableRow({
         <TableCell component="th" scope="row" padding="none">
           <Stack direction="row" alignItems="center" spacing={2}>
             <Avatar alt={username} src={avatarUrl} />
-            <Typography variant="subtitle2" noWrap>
+            <Typography
+              variant="subtitle2"
+              component={RouterLink}
+              to={`/admin/users/${id}`}
+              sx={{
+                textDecoration: "none",
+                color: (theme) => theme.palette.text.primary,
+              }}
+              noWrap
+            >
               {username}
             </Typography>
           </Stack>

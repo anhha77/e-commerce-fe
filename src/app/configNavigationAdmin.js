@@ -78,7 +78,7 @@ const navConfig = [
   },
   {
     title: "account",
-    path: "/admin/users",
+    path: "/admin/users/me",
     icon: icon("ic_user"),
     id: 4,
   },

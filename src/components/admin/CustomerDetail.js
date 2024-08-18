@@ -10,20 +10,19 @@ import {
   Button,
 } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
-import useAuth from "../../hooks/useAuth";
 
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { FormProvider, FTextField, FUploadAvatar } from "../../components/form";
+import { FormProvider, FTextField, FUploadAvatar } from "../form";
 import { fData } from "../../utils/numeralFormat";
 import { useDispatch, useSelector } from "react-redux";
-import { updateUserProfile } from "../../features/profileSlice";
 
 import SecurityIcon from "@mui/icons-material/Security";
 import AddIcon from "@mui/icons-material/Add";
-import CardAddress from "./CardAddress";
-import CreateAddressForm from "./CreateAddressForm";
+import CardAddress from "../user/CardAddress";
+import CreateAddressForm from "../user/CreateAddressForm";
+import { updateCustomerProfile } from "../../features/customerSlice";
 
 const phoneRegExp =
   /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
@@ -35,8 +34,7 @@ const UpdateUserSchema = yup.object().shape({
     .matches(phoneRegExp, "Phone number is invalid"),
 });
 
-function BasicDetail() {
-  const { user } = useAuth();
+function CustomerDetail({ user }) {
   const isLoading = useSelector((state) => state.profile.isLoading);
   const [open, setOpen] = useState(false);
 
@@ -71,8 +69,7 @@ function BasicDetail() {
   const dispatch = useDispatch();
 
   const onSubmit = (data) => {
-    console.log(data);
-    dispatch(updateUserProfile({ ...data }));
+    dispatch(updateCustomerProfile({ ...data, id: user._id }));
   };
 
   const handleDrop = useCallback(
@@ -208,4 +205,4 @@ function BasicDetail() {
   );
 }
 
-export default BasicDetail;
+export default CustomerDetail;

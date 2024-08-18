@@ -1,10 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import apiService from "../app/apiService";
 import { toast } from "react-toastify";
+import { fireBaseExtension, fireBaseUpload } from "../utils/firebase";
 
 const initialState = {
   isLoading: false,
   error: null,
+  selectedCustomer: null,
   currentPageCustomers: [],
   customersById: {},
   totalPages: 1,
@@ -37,8 +39,50 @@ export const getCustomers = createAsyncThunk(
         orderBy,
         sortDirection,
       };
-      console.log(typeof usernameSearch);
       const response = await apiService.get("/users", { params });
+      return response.data.data;
+    } catch (error) {
+      console.log(error);
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
+export const getSingleCustomer = createAsyncThunk(
+  "customer/getCustomer",
+  async ({ id }, thunkAPI) => {
+    try {
+      const response = await apiService.get(`/users/${id}`);
+      return response.data.data;
+    } catch (error) {
+      console.log(error);
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
+export const updateCustomerProfile = createAsyncThunk(
+  "customer/updateCustomer",
+  async (
+    { id, avatarUrl, birthOfDate, phoneNumber, address, cartItem },
+    thunkAPI
+  ) => {
+    try {
+      const data = {
+        birthOfDate,
+        phoneNumber,
+        address,
+        cartItem,
+      };
+      if (avatarUrl instanceof File) {
+        const imageUrl = await fireBaseUpload(
+          fireBaseExtension,
+          "avatar",
+          avatarUrl
+        );
+        data.avatarUrl = imageUrl;
+      }
+      const response = await apiService.put(`/users/${id}`, data);
       return response.data.data;
     } catch (error) {
       console.log(error);
@@ -67,6 +111,34 @@ const slice = createSlice({
         state.isLoading = false;
       })
       .addCase(getCustomers.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
+        toast.error(action.payload.message);
+      });
+
+    builder
+      .addCase(getSingleCustomer.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getSingleCustomer.fulfilled, (state, action) => {
+        state.selectedCustomer = action.payload;
+        state.isLoading = false;
+      })
+      .addCase(getSingleCustomer.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
+        toast.error(action.payload.message);
+      });
+
+    builder
+      .addCase(updateCustomerProfile.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(updateCustomerProfile.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.selectedCustomer = action.payload;
+      })
+      .addCase(updateCustomerProfile.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message;
         toast.error(action.payload.message);

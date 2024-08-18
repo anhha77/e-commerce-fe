@@ -203,6 +203,7 @@ export default function CustomersPage() {
                   {customers.map((row) => (
                     <UserTableRow
                       key={row._id}
+                      id={row._id}
                       username={row.username}
                       email={row.email}
                       phoneNumber={row.phoneNumber}

@@ -53,6 +53,12 @@ function CreateAddressForm({ open, handleClose }) {
   const dispatch = useDispatch();
 
   const onSubmit = (data) => {
+    if (addressList.length < 4 && data.isDefault) {
+      addressList = addressList.map((address) => ({
+        ...address,
+        isDefault: false,
+      }));
+    }
     addressList = [...addressList, data];
     dispatch(updateUserProfile({ address: addressList })).then(() => reset());
   };

@@ -160,9 +160,7 @@ function NavItem({ item, id }) {
   return (
     <ListItemButton
       component={RouterLink}
-      to={`${
-        item.title === "account" ? `${item.path}/${user._id}` : `${item.path}`
-      }`}
+      to={item.path}
       sx={{
         minHeight: 44,
         borderRadius: 0.75,

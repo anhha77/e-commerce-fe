@@ -20,10 +20,17 @@ import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import AddressDialog from "./AddressDialog";
+import { useDispatch } from "react-redux";
+import { updateUserProfile } from "../../features/profileSlice";
+import useAuth from "../../hooks/useAuth";
 
 function CardAddress({ item, index }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [open, setOpen] = useState(false);
+
+  const { user } = useAuth();
+
+  const dispatch = useDispatch();
 
   const handleOpenDialog = () => {
     setOpen(true);
@@ -39,6 +46,37 @@ function CardAddress({ item, index }) {
   };
 
   const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const setAddressAsDefault = () => {
+    let addressList = user.address;
+
+    addressList = addressList.map((address, i) =>
+      index === i
+        ? { ...address, isDefault: true }
+        : { ...address, isDefault: false }
+    );
+    dispatch(updateUserProfile({ address: addressList }));
+    setAnchorEl(null);
+  };
+
+  const deleteAddress = () => {
+    const checkDefault = (address) => {
+      return !address.isDefault;
+    };
+
+    let addressList = user.address;
+
+    addressList = addressList.filter((address, i) =>
+      index !== i ? true : false
+    );
+
+    if (addressList.some(checkDefault)) {
+      addressList[0].isDefault = true;
+    }
+
+    dispatch(updateUserProfile({ address: addressList }));
     setAnchorEl(null);
   };
 
@@ -83,7 +121,7 @@ function CardAddress({ item, index }) {
         }}
       >
         <Paper sx={{ width: 200, maxWidth: "100%" }}>
-          <MenuList onClick={handleClose}>
+          <MenuList onClick={setAddressAsDefault}>
             <MenuItem>
               <Stack direction="row" justifyContent="space-between">
                 <ListItemIcon>
@@ -105,7 +143,7 @@ function CardAddress({ item, index }) {
             </MenuItem>
           </MenuList>
 
-          <MenuList onClick={handleClose}>
+          <MenuList onClick={deleteAddress}>
             <MenuItem>
               <Stack direction="row" justifyContent="space-between">
                 <ListItemIcon>

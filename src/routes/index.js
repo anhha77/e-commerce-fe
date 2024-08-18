@@ -15,6 +15,7 @@ import AdminMainLayout from "../layouts/admin/AdminMainLayout";
 import CustomersPage from "../pages/admin/CustomersPage";
 import CreateCustomersPage from "../pages/admin/CreateCustomerPage";
 import ProfilePage from "../pages/ProfilePage";
+import CustomerProfilePage from "../pages/admin/CustomerProfilePage";
 
 export default function Router() {
   const location = useLocation();
@@ -32,7 +33,7 @@ export default function Router() {
           }
         >
           <Route index element={<HomePage />} />
-          <Route path="users/:id" element={<ProfilePage />} />
+          <Route path="users/me" element={<ProfilePage />} />
         </Route>
 
         <Route
@@ -48,7 +49,8 @@ export default function Router() {
           <Route index element={<AdminHomePage />} />
           <Route path="users" element={<CustomersPage />} />
           <Route path="create_user" element={<CreateCustomersPage />} />
-          <Route path="users/:id" element={<ProfilePage />} />
+          <Route path="users/:id" element={<CustomerProfilePage />} />
+          <Route path="users/me" element={<ProfilePage />} />
         </Route>
 
         <Route element={<BlankLayout />}>

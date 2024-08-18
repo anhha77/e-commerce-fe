@@ -6,7 +6,6 @@ import { fireBaseExtension, fireBaseUpload } from "../utils/firebase";
 const initialState = {
   isLoading: false,
   error: null,
-  selectedUser: null,
   updateProfile: null,
 };
 
