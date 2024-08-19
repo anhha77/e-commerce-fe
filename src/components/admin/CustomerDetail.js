@@ -20,8 +20,8 @@ import { useDispatch, useSelector } from "react-redux";
 
 import SecurityIcon from "@mui/icons-material/Security";
 import AddIcon from "@mui/icons-material/Add";
-import CardAddress from "../user/CardAddress";
-import CreateAddressForm from "../user/CreateAddressForm";
+import CardAddress from "./CardAddress";
+import CreateAddressForm from "./CreateAddressForm";
 import { updateCustomerProfile } from "../../features/customerSlice";
 
 const phoneRegExp =
@@ -189,11 +189,20 @@ function CustomerDetail({ user }) {
                   </Button>
                 }
               />
-              <CreateAddressForm open={open} handleClose={handleCloseDialog} />
+              <CreateAddressForm
+                user={user}
+                open={open}
+                handleClose={handleCloseDialog}
+              />
               <CardContent>
                 <Stack spacing={2}>
                   {user?.address.map((item, index) => (
-                    <CardAddress key={index} item={item} index={index} />
+                    <CardAddress
+                      key={index}
+                      user={user}
+                      item={item}
+                      index={index}
+                    />
                   ))}
                 </Stack>
               </CardContent>
