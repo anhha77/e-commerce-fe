@@ -127,11 +127,11 @@ function AuthProvider({ children }) {
       }
     };
     initialize();
-  }, [data]);
+  }, []);
 
-  // useEffect(() => {
-  //   if (data) dispatch({ type: UPDATE_PROFILE, payload: data });
-  // }, [data]);
+  useEffect(() => {
+    if (data) dispatch({ type: UPDATE_PROFILE, payload: data });
+  }, [data]);
 
   const login = async ({ email, password }, callback) => {
     const response = await apiService.post("/auth/login", { email, password });
