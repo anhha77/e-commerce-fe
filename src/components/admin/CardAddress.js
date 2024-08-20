@@ -70,7 +70,10 @@ function CardAddress({ user, item, index }) {
     );
 
     if (addressList.some(checkDefault)) {
-      addressList[0].isDefault = true;
+      addressList = addressList.map((address, item) => {
+        if (item === 0) return { ...address, isDefault: true };
+        return address;
+      });
     }
 
     dispatch(updateCustomerProfile({ address: addressList, id: user._id }));

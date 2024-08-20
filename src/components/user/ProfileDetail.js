@@ -192,6 +192,9 @@ function ProfileDetail({ user }) {
               <CreateAddressForm open={open} handleClose={handleCloseDialog} />
               <CardContent>
                 <Stack spacing={2}>
+                  {user?.address.length === 0 ? (<Box sx={{height: {"xs": "200px", "md": "300px"}, backgroundImage: "/asset"}}>
+
+                  </Box>)}
                   {user?.address.map((item, index) => (
                     <CardAddress key={index} item={item} index={index} />
                   ))}

@@ -38,11 +38,11 @@ function CustomerProfilePage() {
   ];
 
   return (
-    <Container>
+    <>
       {isLoading ? (
         <LoadingScreen />
       ) : (
-        <>
+        <Container>
           <Stack
             direction="row"
             component={RouterLink}
@@ -88,9 +88,9 @@ function CustomerProfilePage() {
             const isMatched = tab.value === currentTab;
             return isMatched && <Box key={tab.value}>{tab.component}</Box>;
           })}
-        </>
+        </Container>
       )}
-    </Container>
+    </>
   );
 }
 

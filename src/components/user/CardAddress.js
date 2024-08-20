@@ -73,7 +73,12 @@ function CardAddress({ item, index }) {
     );
 
     if (addressList.some(checkDefault)) {
-      addressList[0].isDefault = true;
+      if (addressList.some(checkDefault)) {
+        addressList = addressList.map((address, item) => {
+          if (item === 0) return { ...address, isDefault: true };
+          return address;
+        });
+      }
     }
 
     dispatch(updateUserProfile({ address: addressList }));
