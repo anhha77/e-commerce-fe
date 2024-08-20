@@ -43,11 +43,12 @@ const reducer = (state, action) => {
       };
 
     case INITIALIZE:
-      const { isAuthenticated, user } = action.payload;
+      const { isAuthenticated, isLoginAsAdmin, user } = action.payload;
       return {
         ...state,
         isInitialized: true,
         isAuthenticated,
+        isLoginAsAdmin,
         user,
       };
 
@@ -106,10 +107,17 @@ function AuthProvider({ children }) {
           setSession(accessToken);
           const response = await apiService.get("/users/me");
           const user = response.data.data;
-          console.log(user.role);
+          const getViewRole =
+            window.localStorage.getItem("isLoginAsAdmin") === "true"
+              ? true
+              : false;
           dispatch({
             type: INITIALIZE,
-            payload: { isAuthenticated: true, user },
+            payload: {
+              isAuthenticated: true,
+              isLoginAsAdmin: getViewRole,
+              user,
+            },
           });
         } else {
           setSession(null);
@@ -170,11 +178,13 @@ function AuthProvider({ children }) {
   };
 
   const loginAsAdmin = (callback) => {
+    window.localStorage.setItem("isLoginAsAdmin", true);
     dispatch({ type: LOGIN_AS_ADMIN });
     callback();
   };
 
   const loginAsUser = (callback) => {
+    window.localStorage.setItem("isLoginAsAdmin", false);
     dispatch({ type: LOGIN_AS_USER });
     callback();
   };

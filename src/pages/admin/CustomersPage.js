@@ -22,10 +22,13 @@ import UserTableToolbar from "../../components/table/UserTableToolbar";
 import { useDispatch, useSelector } from "react-redux";
 import { getCustomers } from "../../features/customerSlice";
 import LoadingScreen from "../../components/LoadingScreen";
+import { useNavigate } from "react-router-dom";
 
 // ----------------------------------------------------------------------
 
 export default function CustomersPage() {
+  const navigate = useNavigate();
+
   const [limit, setLimit] = useState(5);
 
   const [page, setPage] = useState(0);
@@ -158,6 +161,7 @@ export default function CustomersPage() {
           variant="contained"
           color="inherit"
           startIcon={<Iconify icon="eva:plus-fill" />}
+          onClick={() => navigate("/admin/create_user")}
         >
           New User
         </Button>

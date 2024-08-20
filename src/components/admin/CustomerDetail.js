@@ -196,14 +196,38 @@ function CustomerDetail({ user }) {
               />
               <CardContent>
                 <Stack spacing={2}>
-                  {user?.address.map((item, index) => (
-                    <CardAddress
-                      key={index}
-                      user={user}
-                      item={item}
-                      index={index}
-                    />
-                  ))}
+                  {user?.address.length === 0 ? (
+                    <>
+                      <Box
+                        sx={{
+                          height: { xs: "200px", md: "300px" },
+                          backgroundImage:
+                            "url('/assets/new_images/add_address.jpg')",
+                          backgroundSize: 300,
+                          backgroundRepeat: "no-repeat",
+                          backgroundPosition: "center",
+                        }}
+                      />
+                      <Typography
+                        variant="p"
+                        sx={{
+                          color: (theme) => theme.palette.text.disabled,
+                          textAlign: "center",
+                        }}
+                      >
+                        Add address location
+                      </Typography>
+                    </>
+                  ) : (
+                    user?.address.map((item, index) => (
+                      <CardAddress
+                        key={index}
+                        user={user}
+                        item={item}
+                        index={index}
+                      />
+                    ))
+                  )}
                 </Stack>
               </CardContent>
             </Card>
