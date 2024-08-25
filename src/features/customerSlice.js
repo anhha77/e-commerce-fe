@@ -39,7 +39,7 @@ export const getCustomers = createAsyncThunk(
         orderBy,
         sortDirection,
       };
-      const response = await apiService.get("/users", { params });
+      const response = await apiService.get("/admin/users", { params });
       return response.data.data;
     } catch (error) {
       console.log(error);
@@ -52,11 +52,44 @@ export const getSingleCustomer = createAsyncThunk(
   "customer/getCustomer",
   async ({ id }, thunkAPI) => {
     try {
-      const response = await apiService.get(`/users/${id}`);
+      const response = await apiService.get(`/admin/users/${id}`);
       return response.data.data;
     } catch (error) {
       console.log(error);
       return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
+export const createCustomer = createAsyncThunk(
+  "customer/createCustomer",
+  async (
+    { avatarUrl, username, email, password, birthOfDate, phoneNumber, address },
+    thunkAPI
+  ) => {
+    try {
+      const data = {
+        avatarUrl,
+        username,
+        email,
+        password,
+        birthOfDate,
+        phoneNumber,
+        address,
+      };
+      if (avatarUrl instanceof File) {
+        const imageUrl = await fireBaseUpload(
+          fireBaseExtension,
+          "avatar",
+          avatarUrl
+        );
+        data.avatarUrl = imageUrl;
+      }
+      const response = await apiService.post("/admin/users", data);
+      return response.data.data;
+    } catch (error) {
+      console.log(error);
+      thunkAPI.rejectWithValue(error);
     }
   }
 );
@@ -82,7 +115,7 @@ export const updateCustomerProfile = createAsyncThunk(
         );
         data.avatarUrl = imageUrl;
       }
-      const response = await apiService.put(`/users/${id}`, data);
+      const response = await apiService.put(`/admin/users/${id}`, data);
       return response.data.data;
     } catch (error) {
       console.log(error);
@@ -125,6 +158,20 @@ const slice = createSlice({
         state.isLoading = false;
       })
       .addCase(getSingleCustomer.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
+        toast.error(action.payload.message);
+      });
+
+    builder
+      .addCase(createCustomer.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(createCustomer.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.selectedCustomer = action.payload;
+      })
+      .addCase(createCustomer.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message;
         toast.error(action.payload.message);
