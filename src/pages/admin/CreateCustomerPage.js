@@ -26,7 +26,10 @@ import Iconify from "../../components/Iconify";
 import { LoadingButton } from "@mui/lab";
 import { useSelector } from "react-redux";
 import AddIcon from "@mui/icons-material/Add";
-import { useTheme } from "@emotion/react";
+import FlagIcon from "@mui/icons-material/Flag";
+import HomeIcon from "@mui/icons-material/Home";
+import ContactPhoneIcon from "@mui/icons-material/ContactPhone";
+import RemoveIcon from "@mui/icons-material/Remove";
 
 const phoneRegExp =
   /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
@@ -96,6 +99,68 @@ function CreateCustomersPage() {
       }
     },
     [setValue]
+  );
+
+  const renderCardAddress = (
+    <Card>
+      <CardHeader
+        title="Add address"
+        action={
+          <Button
+            variant="text"
+            endIcon={<RemoveIcon />}
+            sx={{
+              "&:hover": {
+                backgroundColor: (theme) => theme.palette.error.dark,
+                color: "white",
+              },
+            }}
+          >
+            Delete
+          </Button>
+        }
+      />
+      <CardContent>
+        <Stack spacing={2}>
+          <FTextField
+            name="country"
+            label="Country"
+            fullWidth
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <FlagIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
+          <FTextField
+            name="addressLocation"
+            label="Address"
+            fullWidth
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <HomeIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
+          <FTextField
+            name="phoneNumber"
+            label="Phone Number"
+            fullWidth
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <ContactPhoneIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
+        </Stack>
+      </CardContent>
+    </Card>
   );
 
   return (
@@ -230,7 +295,7 @@ function CreateCustomersPage() {
                 <CardContent>
                   <Stack spacing={2}>
                     <>
-                      <Box
+                      {/* <Box
                         sx={{
                           height: { xs: "200px", md: "300px" },
                           backgroundImage:
@@ -248,7 +313,8 @@ function CreateCustomersPage() {
                         }}
                       >
                         Add address location
-                      </Typography>
+                      </Typography> */}
+                      {renderCardAddress}
                     </>
                   </Stack>
                 </CardContent>
