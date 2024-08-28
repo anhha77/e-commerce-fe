@@ -60,6 +60,7 @@ function CreateCustomersPage() {
   const isLoading = useSelector((state) => state.customer.isLoading);
 
   const [showPassword, setShowPassword] = useState(false);
+  const [addresses, setAddresses] = useState([]);
 
   const defaultValues = {
     username: "",
@@ -68,7 +69,7 @@ function CreateCustomersPage() {
     birthOfDate: "",
     phoneNumber: "",
     role: "user",
-    address: null,
+    address: [],
   };
 
   const methods = useForm({
@@ -87,6 +88,15 @@ function CreateCustomersPage() {
     console.log(data);
   };
 
+  const handleAddAddress = () => {
+    setAddresses([...addresses, <CardAddress />]);
+  };
+
+  const handleDeleteAddress = (index) => {
+    const newRenderAddress = addresses.filter((address, i) => index !== i);
+    setAddresses(newRenderAddress);
+  };
+
   const handleDrop = useCallback(
     (acceptedFiles) => {
       const file = acceptedFiles[0];
@@ -101,67 +111,70 @@ function CreateCustomersPage() {
     [setValue]
   );
 
-  const renderCardAddress = (
-    <Card>
-      <CardHeader
-        title="Add address"
-        action={
-          <Button
-            variant="text"
-            endIcon={<RemoveIcon />}
-            sx={{
-              "&:hover": {
-                backgroundColor: (theme) => theme.palette.error.dark,
-                color: "white",
-              },
-            }}
-          >
-            Delete
-          </Button>
-        }
-      />
-      <CardContent>
-        <Stack spacing={2}>
-          <FTextField
-            name="country"
-            label="Country"
-            fullWidth
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <FlagIcon />
-                </InputAdornment>
-              ),
-            }}
-          />
-          <FTextField
-            name="addressLocation"
-            label="Address"
-            fullWidth
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <HomeIcon />
-                </InputAdornment>
-              ),
-            }}
-          />
-          <FTextField
-            name="phoneNumber"
-            label="Phone Number"
-            fullWidth
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <ContactPhoneIcon />
-                </InputAdornment>
-              ),
-            }}
-          />
-        </Stack>
-      </CardContent>
-    </Card>
-  );
+  const CardAddress = ({ index }) => {
+    return (
+      <Card>
+        <CardHeader
+          title={`Address ${index + 1}`}
+          action={
+            <Button
+              variant="text"
+              endIcon={<RemoveIcon />}
+              sx={{
+                "&:hover": {
+                  backgroundColor: (theme) => theme.palette.error.dark,
+                  color: "white",
+                },
+              }}
+              onClick={() => handleDeleteAddress(index)}
+            >
+              Delete
+            </Button>
+          }
+        />
+        <CardContent>
+          <Stack spacing={2}>
+            <FTextField
+              name="country"
+              label="Country"
+              fullWidth
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <FlagIcon />
+                  </InputAdornment>
+                ),
+              }}
+            />
+            <FTextField
+              name="addressLocation"
+              label="Address"
+              fullWidth
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <HomeIcon />
+                  </InputAdornment>
+                ),
+              }}
+            />
+            <FTextField
+              name="phoneNumber"
+              label="Phone Number"
+              fullWidth
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <ContactPhoneIcon />
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </Stack>
+        </CardContent>
+      </Card>
+    );
+  };
 
   return (
     <Container>
@@ -287,7 +300,11 @@ function CreateCustomersPage() {
                 <CardHeader
                   title="Address"
                   action={
-                    <Button variant="text" startIcon={<AddIcon />}>
+                    <Button
+                      variant="text"
+                      startIcon={<AddIcon />}
+                      onClick={handleAddAddress}
+                    >
                       Address
                     </Button>
                   }
@@ -295,26 +312,33 @@ function CreateCustomersPage() {
                 <CardContent>
                   <Stack spacing={2}>
                     <>
-                      {/* <Box
-                        sx={{
-                          height: { xs: "200px", md: "300px" },
-                          backgroundImage:
-                            "url('/assets/new_images/add_address.jpg')",
-                          backgroundSize: 300,
-                          backgroundRepeat: "no-repeat",
-                          backgroundPosition: "center",
-                        }}
-                      />
-                      <Typography
-                        variant="p"
-                        sx={{
-                          color: (theme) => theme.palette.text.disabled,
-                          textAlign: "center",
-                        }}
-                      >
-                        Add address location
-                      </Typography> */}
-                      {renderCardAddress}
+                      {addresses.length === 0 ? (
+                        <>
+                          <Box
+                            sx={{
+                              height: { xs: "200px", md: "300px" },
+                              backgroundImage:
+                                "url('/assets/new_images/add_address.jpg')",
+                              backgroundSize: 300,
+                              backgroundRepeat: "no-repeat",
+                              backgroundPosition: "center",
+                            }}
+                          />
+                          <Typography
+                            variant="p"
+                            sx={{
+                              color: (theme) => theme.palette.text.disabled,
+                              textAlign: "center",
+                            }}
+                          >
+                            Add address location
+                          </Typography>
+                        </>
+                      ) : (
+                        addresses.map((address, i) => (
+                          <CardAddress key={i} index={i} />
+                        ))
+                      )}
                     </>
                   </Stack>
                 </CardContent>
