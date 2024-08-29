@@ -20,7 +20,12 @@ import { fData } from "../../utils/numeralFormat";
 import { useFieldArray, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { FormProvider, FTextField, FUploadAvatar } from "../../components/form";
+import {
+  FormProvider,
+  FSwitch,
+  FTextField,
+  FUploadAvatar,
+} from "../../components/form";
 import Iconify from "../../components/Iconify";
 import { LoadingButton } from "@mui/lab";
 import { useSelector } from "react-redux";
@@ -81,6 +86,7 @@ function CreateCustomersPage() {
     setValue,
     formState: { isSubmitting },
     control,
+    watch,
   } = methods;
 
   const { fields, append, remove } = useFieldArray({
@@ -93,7 +99,12 @@ function CreateCustomersPage() {
   };
 
   const handleAddAddress = () => {
-    append({ country: "", addressLocation: "", phoneNumber: "" });
+    append({
+      country: "",
+      addressLocation: "",
+      phoneNumber: "",
+      isDefault: false,
+    });
   };
 
   const handleDeleteAddress = (index) => {
@@ -118,7 +129,19 @@ function CreateCustomersPage() {
     return (
       <Card>
         <CardHeader
-          title={`Address ${index + 1}`}
+          title={
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 2,
+              }}
+            >
+              {`Address ${index + 1}`}
+              <FSwitch name={`address.${index}.isDefault`} label="Default" />
+            </Box>
+          }
           action={
             <Button
               variant="text"
