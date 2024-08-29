@@ -12,13 +12,12 @@ import {
   MenuItem,
   Stack,
   Typography,
-  useMediaQuery,
 } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import React, { useCallback, useState } from "react";
 import { fData } from "../../utils/numeralFormat";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { FormProvider, FTextField, FUploadAvatar } from "../../components/form";
@@ -48,10 +47,11 @@ const CreateUserSchema = yup.object().shape({
   email: yup.string().email("Invalid email").required("Email is required"),
   password: yup.string().required("Password is required"),
   role: yup.string().required("Role is required"),
-  address: yup.array().when({
-    is: (exists) => !!exists,
-    then: () => yup.array().of(yup.object().shape(validateAddressSchema)),
-  }),
+  // address: yup.array().when({
+  //   is: (exists) => !!exists,
+  //   then: () => yup.array().of(yup.object().shape(validateAddressSchema)),
+  // }),
+  address: yup.array().of(validateAddressSchema),
 });
 
 const roles = ["admin", "user"];
@@ -60,7 +60,6 @@ function CreateCustomersPage() {
   const isLoading = useSelector((state) => state.customer.isLoading);
 
   const [showPassword, setShowPassword] = useState(false);
-  const [addresses, setAddresses] = useState([]);
 
   const defaultValues = {
     username: "",
@@ -84,17 +83,21 @@ function CreateCustomersPage() {
     control,
   } = methods;
 
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "address",
+  });
+
   const onSubmit = (data) => {
     console.log(data);
   };
 
   const handleAddAddress = () => {
-    setAddresses([...addresses, <CardAddress />]);
+    append({ country: "", addressLocation: "", phoneNumber: "" });
   };
 
   const handleDeleteAddress = (index) => {
-    const newRenderAddress = addresses.filter((address, i) => index !== i);
-    setAddresses(newRenderAddress);
+    remove(index);
   };
 
   const handleDrop = useCallback(
@@ -135,7 +138,7 @@ function CreateCustomersPage() {
         <CardContent>
           <Stack spacing={2}>
             <FTextField
-              name="country"
+              name={`address.${index}.country`}
               label="Country"
               fullWidth
               InputProps={{
@@ -147,7 +150,7 @@ function CreateCustomersPage() {
               }}
             />
             <FTextField
-              name="addressLocation"
+              name={`address.${index}.addressLocation`}
               label="Address"
               fullWidth
               InputProps={{
@@ -159,7 +162,7 @@ function CreateCustomersPage() {
               }}
             />
             <FTextField
-              name="phoneNumber"
+              name={`address.${index}.phoneNumber`}
               label="Phone Number"
               fullWidth
               InputProps={{
@@ -312,7 +315,7 @@ function CreateCustomersPage() {
                 <CardContent>
                   <Stack spacing={2}>
                     <>
-                      {addresses.length === 0 ? (
+                      {fields?.length === 0 ? (
                         <>
                           <Box
                             sx={{
@@ -335,8 +338,8 @@ function CreateCustomersPage() {
                           </Typography>
                         </>
                       ) : (
-                        addresses.map((address, i) => (
-                          <CardAddress key={i} index={i} />
+                        fields.map((field, index) => (
+                          <CardAddress key={field.id} index={index} />
                         ))
                       )}
                     </>
