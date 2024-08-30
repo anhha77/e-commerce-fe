@@ -6,26 +6,28 @@ import {
   CardHeader,
   Container,
   Divider,
+  FormControlLabel,
   Grid,
   IconButton,
   InputAdornment,
   MenuItem,
   Stack,
+  Switch,
   Typography,
 } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import React, { useCallback, useState } from "react";
 import { fData } from "../../utils/numeralFormat";
-import { useFieldArray, useForm } from "react-hook-form";
+import {
+  Controller,
+  useFieldArray,
+  useForm,
+  useFormContext,
+} from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import {
-  FormProvider,
-  FSwitch,
-  FTextField,
-  FUploadAvatar,
-} from "../../components/form";
+import { FormProvider, FTextField, FUploadAvatar } from "../../components/form";
 import Iconify from "../../components/Iconify";
 import { LoadingButton } from "@mui/lab";
 import { useSelector } from "react-redux";
@@ -65,6 +67,7 @@ function CreateCustomersPage() {
   const isLoading = useSelector((state) => state.customer.isLoading);
 
   const [showPassword, setShowPassword] = useState(false);
+  const [isDefaultList, setIsDefaultList] = useState([]);
 
   const defaultValues = {
     username: "",
@@ -86,7 +89,6 @@ function CreateCustomersPage() {
     setValue,
     formState: { isSubmitting },
     control,
-    watch,
   } = methods;
 
   const { fields, append, remove } = useFieldArray({
@@ -99,6 +101,7 @@ function CreateCustomersPage() {
   };
 
   const handleAddAddress = () => {
+    setIsDefaultList([...isDefaultList, true]);
     append({
       country: "",
       addressLocation: "",
@@ -108,6 +111,7 @@ function CreateCustomersPage() {
   };
 
   const handleDeleteAddress = (index) => {
+    setIsDefaultList((prev) => prev.filter((item, i) => i !== index));
     remove(index);
   };
 
@@ -125,6 +129,34 @@ function CreateCustomersPage() {
     [setValue]
   );
 
+  function FSwitchAddress({ name, ...other }) {
+    const { control } = useFormContext();
+
+    return (
+      <FormControlLabel
+        control={
+          <Controller
+            name={name}
+            control={control}
+            render={({ field }) => (
+              <Switch
+                {...field}
+                checked={field.value}
+                onChange={(e) => {
+                  if (isDefaultList.includes(true)) {
+                  }
+                  console.log(e.target.checked);
+                  field.onChange(e);
+                }}
+              />
+            )}
+          />
+        }
+        {...other}
+      />
+    );
+  }
+
   const CardAddress = ({ index }) => {
     return (
       <Card>
@@ -139,7 +171,11 @@ function CreateCustomersPage() {
               }}
             >
               {`Address ${index + 1}`}
-              <FSwitch name={`address.${index}.isDefault`} label="Default" />
+              <FSwitchAddress
+                name={`address.${index}.isDefault`}
+                label="Default"
+                index={index}
+              />
             </Box>
           }
           action={
