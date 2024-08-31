@@ -30,12 +30,13 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { FormProvider, FTextField, FUploadAvatar } from "../../components/form";
 import Iconify from "../../components/Iconify";
 import { LoadingButton } from "@mui/lab";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import AddIcon from "@mui/icons-material/Add";
 import FlagIcon from "@mui/icons-material/Flag";
 import HomeIcon from "@mui/icons-material/Home";
 import ContactPhoneIcon from "@mui/icons-material/ContactPhone";
 import RemoveIcon from "@mui/icons-material/Remove";
+import { createCustomer } from "../../features/customerSlice";
 
 const phoneRegExp =
   /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
@@ -65,6 +66,7 @@ const roles = ["admin", "user"];
 
 function CreateCustomersPage() {
   const isLoading = useSelector((state) => state.customer.isLoading);
+  const dispatch = useDispatch();
 
   const [showPassword, setShowPassword] = useState(false);
   const [isDefaultList, setIsDefaultList] = useState([]);
@@ -89,6 +91,7 @@ function CreateCustomersPage() {
     setValue,
     formState: { isSubmitting },
     control,
+    reset,
   } = methods;
 
   const { fields, append, remove } = useFieldArray({
@@ -97,11 +100,30 @@ function CreateCustomersPage() {
   });
 
   const onSubmit = (data) => {
-    console.log(data);
+    if (data.address.length === 0) {
+      data.address = undefined;
+    } else {
+      if (!isDefaultList.includes(true)) {
+        data.address[0].isDefault = true;
+      }
+    }
+
+    if (data.birthOfDate === "") {
+      data.birthOfDate = undefined;
+    }
+
+    if (data.phoneNumber === "") {
+      data.phoneNumber = undefined;
+    }
+
+    dispatch(createCustomer({ ...data })).then(() => {
+      setIsDefaultList([]);
+      reset();
+    });
   };
 
   const handleAddAddress = () => {
-    setIsDefaultList([...isDefaultList, true]);
+    setIsDefaultList([...isDefaultList, false]);
     append({
       country: "",
       addressLocation: "",
@@ -143,9 +165,30 @@ function CreateCustomersPage() {
                 {...field}
                 checked={field.value}
                 onChange={(e) => {
-                  if (isDefaultList.includes(true)) {
+                  if (isDefaultList.includes(true) && e.target.checked) {
+                    setIsDefaultList((prev) =>
+                      prev.map((item, i) => {
+                        if (i !== other.index) {
+                          setValue(`address.${i}.isDefault`, false);
+                          return false;
+                        } else {
+                          setValue(`address.${i}.isDefault`, true);
+                          return true;
+                        }
+                      })
+                    );
+                  } else {
+                    setIsDefaultList((prev) =>
+                      prev.map((item, i) => {
+                        if (i !== other.index) {
+                          return false;
+                        } else {
+                          return e.target.checked;
+                        }
+                      })
+                    );
                   }
-                  console.log(e.target.checked);
+                  // console.log(e.target.checked);
                   field.onChange(e);
                 }}
               />

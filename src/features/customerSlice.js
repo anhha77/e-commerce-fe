@@ -64,7 +64,16 @@ export const getSingleCustomer = createAsyncThunk(
 export const createCustomer = createAsyncThunk(
   "customer/createCustomer",
   async (
-    { avatarUrl, username, email, password, birthOfDate, phoneNumber, address },
+    {
+      avatarUrl,
+      username,
+      email,
+      password,
+      birthOfDate,
+      phoneNumber,
+      address,
+      role,
+    },
     thunkAPI
   ) => {
     try {
@@ -75,6 +84,7 @@ export const createCustomer = createAsyncThunk(
         password,
         birthOfDate,
         phoneNumber,
+        role,
         address,
       };
       if (avatarUrl instanceof File) {
@@ -89,7 +99,7 @@ export const createCustomer = createAsyncThunk(
       return response.data.data;
     } catch (error) {
       console.log(error);
-      thunkAPI.rejectWithValue(error);
+      return thunkAPI.rejectWithValue(error);
     }
   }
 );
@@ -170,6 +180,7 @@ const slice = createSlice({
       .addCase(createCustomer.fulfilled, (state, action) => {
         state.isLoading = false;
         state.selectedCustomer = action.payload;
+        toast.success("Create Customer Successfully");
       })
       .addCase(createCustomer.rejected, (state, action) => {
         state.isLoading = false;
@@ -184,6 +195,7 @@ const slice = createSlice({
       .addCase(updateCustomerProfile.fulfilled, (state, action) => {
         state.isLoading = false;
         state.selectedCustomer = action.payload;
+        toast.success("Update Customer Successfully");
       })
       .addCase(updateCustomerProfile.rejected, (state, action) => {
         state.isLoading = false;
