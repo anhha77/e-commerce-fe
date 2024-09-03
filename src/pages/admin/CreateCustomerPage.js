@@ -27,7 +27,12 @@ import {
 } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { FormProvider, FTextField, FUploadAvatar } from "../../components/form";
+import {
+  FDatePicker,
+  FormProvider,
+  FTextField,
+  FUploadAvatar,
+} from "../../components/form";
 import Iconify from "../../components/Iconify";
 import { LoadingButton } from "@mui/lab";
 import { useDispatch, useSelector } from "react-redux";
@@ -37,6 +42,7 @@ import HomeIcon from "@mui/icons-material/Home";
 import ContactPhoneIcon from "@mui/icons-material/ContactPhone";
 import RemoveIcon from "@mui/icons-material/Remove";
 import { createCustomer } from "../../features/customerSlice";
+import dayjs from "dayjs";
 
 const phoneRegExp =
   /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
@@ -59,6 +65,11 @@ const CreateUserSchema = yup.object().shape({
   //   is: (exists) => !!exists,
   //   then: () => yup.array().of(yup.object().shape(validateAddressSchema)),
   // }),
+  birthOfDate: yup
+    .date()
+    .typeError("Please select a valid date")
+    .min(new Date("1800-01-01"), "Year before 1800 is not valid")
+    .max(new Date(), "Future day is not valid"),
   address: yup.array().of(validateAddressSchema),
 });
 
@@ -75,7 +86,7 @@ function CreateCustomersPage() {
     username: "",
     email: "",
     password: "",
-    birthOfDate: "",
+    birthOfDate: new Date().toLocaleDateString("en-GB"),
     phoneNumber: "",
     role: "user",
     address: [],
@@ -89,7 +100,7 @@ function CreateCustomersPage() {
   const {
     handleSubmit,
     setValue,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
     control,
     reset,
   } = methods;
@@ -188,7 +199,6 @@ function CreateCustomersPage() {
                       })
                     );
                   }
-                  // console.log(e.target.checked);
                   field.onChange(e);
                 }}
               />
@@ -373,8 +383,20 @@ function CreateCustomersPage() {
                 />
                 <FTextField name="phoneNumber" label="Phone Number" />
 
-                <FTextField name="birthOfDate" label="Birthdate" />
-                <FTextField name="role" label="Role" select>
+                {/* <FTextField name="birthOfDate" label="Birthdate" /> */}
+                <FDatePicker
+                  name="birthOfDate"
+                  label="Birthdate"
+                  sx={{ width: "100%", justifyContent: "flex-end" }}
+                  error={errors?.fromDate?.message}
+                  defaultValue={dayjs(`${new Date().toLocaleString("en-GB")}`)}
+                />
+                <FTextField
+                  name="role"
+                  label="Role"
+                  select
+                  sx={{ paddingTop: 1 }}
+                >
                   {roles.map((role, index) => (
                     <MenuItem key={index} value={role}>
                       {role}

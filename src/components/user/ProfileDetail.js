@@ -14,7 +14,7 @@ import { LoadingButton } from "@mui/lab";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { FormProvider, FTextField, FUploadAvatar } from "../form";
+import { FormProvider, FTextField, FUploadAvatar, FDatePicker } from "../form";
 import { fData } from "../../utils/numeralFormat";
 import { useDispatch, useSelector } from "react-redux";
 import { updateUserProfile } from "../../features/profileSlice";
@@ -23,6 +23,7 @@ import SecurityIcon from "@mui/icons-material/Security";
 import AddIcon from "@mui/icons-material/Add";
 import CardAddress from "./CardAddress";
 import CreateAddressForm from "./CreateAddressForm";
+import dayjs from "dayjs";
 
 const phoneRegExp =
   /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
@@ -32,6 +33,11 @@ const UpdateUserSchema = yup.object().shape({
     .string()
     .required("Phone number is required")
     .matches(phoneRegExp, "Phone number is invalid"),
+  birthOfDate: yup
+    .date()
+    .typeError("Please select a valid date")
+    .min(new Date("1800-01-01"), "Year before 1800 is not valid")
+    .max(new Date(), "Future day is not valid"),
 });
 
 function ProfileDetail({ user }) {
@@ -51,7 +57,7 @@ function ProfileDetail({ user }) {
     username: user?.username || "",
     email: user?.email || "",
     phoneNumber: user?.phoneNumber || "",
-    birthOfDate: user?.birthOfDate || "",
+    birthOfDate: user?.birthOfDate || new Date().toLocaleString("en-GB"),
     role: user?.role || "",
   };
 
@@ -63,7 +69,7 @@ function ProfileDetail({ user }) {
   const {
     handleSubmit,
     setValue,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
   } = methods;
 
   const dispatch = useDispatch();
@@ -162,15 +168,24 @@ function ProfileDetail({ user }) {
                 <FTextField name="username" label="Username" disabled />
                 <FTextField name="email" label="Email" disabled />
                 <FTextField name="role" label="Role" disabled />
-                <FTextField name="birthOfDate" label="Birthdate" />
+                <FTextField name="phoneNumber" label="Phone number" />
               </Box>
 
-              <Stack spacing={3} alignItems="flex-end" sx={{ mt: 3 }}>
-                <FTextField name="phoneNumber" label="Phone number" />
+              <Stack spacing={3} sx={{ mt: 3 }}>
+                <FDatePicker
+                  name="birthOfDate"
+                  label="Birthdate"
+                  sx={{ width: "100%", justifyContent: "flex-end" }}
+                  error={errors?.fromDate?.message}
+                  defaultValue={dayjs(
+                    `${user?.birthOfDate || new Date().toLocaleString("en-GB")}`
+                  )}
+                />
                 <LoadingButton
                   type="submit"
                   variant="contained"
                   loading={isSubmitting || isLoading}
+                  sx={{ alignSelf: "flex-end" }}
                 >
                   Save Changes
                 </LoadingButton>
