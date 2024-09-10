@@ -162,6 +162,7 @@ function CreateCustomersPage() {
     [setValue]
   );
 
+  console.log(methods.getValues());
   function FSwitchAddress({ name, ...other }) {
     const { control } = useFormContext();
 
@@ -389,7 +390,7 @@ function CreateCustomersPage() {
                   label="Birthdate"
                   sx={{ width: "100%", justifyContent: "flex-end" }}
                   error={errors?.fromDate?.message}
-                  defaultValue={dayjs(`${new Date().toLocaleString("en-GB")}`)}
+                  defaultValue={dayjs(`${new Date()}`)}
                 />
                 <FTextField
                   name="role"
