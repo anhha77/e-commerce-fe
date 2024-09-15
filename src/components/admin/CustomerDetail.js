@@ -22,8 +22,12 @@ import SecurityIcon from "@mui/icons-material/Security";
 import AddIcon from "@mui/icons-material/Add";
 import CardAddress from "./CardAddress";
 import CreateAddressForm from "./CreateAddressForm";
-import { updateCustomerProfile } from "../../features/customerSlice";
+import {
+  deleteCustomer,
+  updateCustomerProfile,
+} from "../../features/customerSlice";
 import dayjs from "dayjs";
+import { useNavigate } from "react-router-dom";
 
 const phoneRegExp =
   /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
@@ -43,6 +47,7 @@ const UpdateUserSchema = yup.object().shape({
 function CustomerDetail({ user }) {
   const isLoading = useSelector((state) => state.profile.isLoading);
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
 
   const handleOpenDialog = () => {
     setOpen(true);
@@ -131,6 +136,11 @@ function CustomerDetail({ user }) {
                       backgroundColor: (theme) => theme.palette.error.dark,
                     },
                   }}
+                  onClick={() =>
+                    dispatch(deleteCustomer({ id: user._id })).then(() =>
+                      navigate("/admin/users", { replace: true })
+                    )
+                  }
                 >
                   Delete
                 </Button>

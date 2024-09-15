@@ -3,26 +3,21 @@ import lodash from "lodash";
 
 import Card from "@mui/material/Card";
 import Stack from "@mui/material/Stack";
-import Table from "@mui/material/Table";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
-import TableBody from "@mui/material/TableBody";
+
 import Typography from "@mui/material/Typography";
-import TableContainer from "@mui/material/TableContainer";
-import TablePagination from "@mui/material/TablePagination";
 
 import Iconify from "../../components/Iconify";
-import Scrollbar from "../../components/scrollbar";
 
-import TableNoData from "../../components/table/TableNoData";
-import UserTableRow from "../../components/table/UserTableRow";
-import UserTableHead from "../../components/table/UserTableHead";
-import TableEmptyRows from "../../components/table/TableEmptyRows";
 import UserTableToolbar from "../../components/table/UserTableToolbar";
 import { useDispatch, useSelector } from "react-redux";
 import { getCustomers } from "../../features/customerSlice";
-import LoadingScreen from "../../components/LoadingScreen";
+
 import { useNavigate } from "react-router-dom";
+import UserStatusNav from "../../components/table/UserStatusNav";
+import { Divider } from "@mui/material";
+import TableContent from "../../components/table/TableContent";
 
 // ----------------------------------------------------------------------
 
@@ -47,6 +42,10 @@ export default function CustomersPage() {
 
   const [selected, setSelected] = useState([]);
 
+  const [selectedDeleted, setSelectedDeleted] = useState([]);
+
+  const [currentTab, setCurrentTab] = useState("all");
+
   const emptyRows = (page, rowsPerPage, arrayLength) => {
     return page ? Math.max(0, rowsPerPage - arrayLength) : 0;
   };
@@ -56,10 +55,23 @@ export default function CustomersPage() {
     currentPageCustomers,
     customersById,
     totalCustomers,
-    totalPages,
+    currentPageActiveCustomers,
+    activeCustomersById,
+    totalActiveCustomers,
+    currentPageDeletedCustomers,
+    deletedCustomersById,
+    totalDeletedCustomers,
   } = useSelector((state) => state.customer);
   const customers = currentPageCustomers.map(
     (customerId) => customersById[customerId]
+  );
+
+  const activeCustomers = currentPageActiveCustomers.map(
+    (activeCustomerId) => activeCustomersById[activeCustomerId]
+  );
+
+  const deletedCustomers = currentPageDeletedCustomers.map(
+    (deletedCustomerId) => deletedCustomersById[deletedCustomerId]
   );
 
   const dispatch = useDispatch();
@@ -91,6 +103,30 @@ export default function CustomersPage() {
     setSelected(newSelected);
   };
 
+  const handleSelectDeletedAllClick = (event) => {
+    setSelectedDeleted([]);
+  };
+
+  const handleClickDeleted = (event, username) => {
+    const selectedDeletedIndex = selectedDeleted.indexOf(username);
+    let newSelectedDeleted = [];
+    if (selectedDeletedIndex === -1) {
+      newSelectedDeleted = newSelectedDeleted.concat(selectedDeleted, username);
+    } else if (selectedDeletedIndex === 0) {
+      newSelectedDeleted = newSelectedDeleted.concat(selectedDeleted.slice(1));
+    } else if (selectedDeletedIndex === selectedDeleted.length - 1) {
+      newSelectedDeleted = newSelectedDeleted.concat(
+        selectedDeleted.slice(0, -1)
+      );
+    } else if (selectedDeletedIndex > 0) {
+      newSelectedDeleted = newSelectedDeleted.concat(
+        selectedDeleted.slice(0, selectedDeletedIndex),
+        selectedDeleted.slice(selectedDeletedIndex + 1)
+      );
+    }
+    setSelectedDeleted(newSelectedDeleted);
+  };
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -116,6 +152,10 @@ export default function CustomersPage() {
   };
 
   const notFound = !customers.length && !!searchQuery;
+
+  const notFoundActive = !activeCustomers.length && !!searchQuery;
+
+  const notFoundDeleted = !deletedCustomers.length && !!searchQuery;
 
   useEffect(() => {
     const callAPI = lodash.debounce(
@@ -168,81 +208,110 @@ export default function CustomersPage() {
       </Stack>
 
       <Card>
-        <UserTableToolbar
-          numSelected={selected.length}
-          searchQuery={searchQuery}
-          onSearchQuery={handleSearchQuery}
-          usernameSearch={usernameSearch}
-          emailSearch={emailSearch}
-          phoneNumberSearch={phoneNumberSearch}
-          setUsernameSearch={setUsernameSearch}
-          setEmailSearch={setEmailSearch}
-          setPhoneNumberSearch={setPhoneNumberSearch}
-        />
+        <UserStatusNav currentTab={currentTab} setCurrentTab={setCurrentTab} />
 
-        <Scrollbar>
-          <TableContainer sx={{ overflow: "unset", minHeight: 300 }}>
-            {isLoading ? (
-              <LoadingScreen />
-            ) : (
-              <Table sx={{ minWidth: 800 }}>
-                <UserTableHead
-                  order={sortDirection === 1 ? "asc" : "desc"}
-                  orderBy={orderBy}
-                  rowCount={totalCustomers}
-                  numSelected={selected.length}
-                  onRequestSort={handleSort}
-                  onSelectAllClick={handleSelectAllClick}
-                  headLabel={[
-                    { id: "username", label: "Userame" },
-                    { id: "email", label: "Email" },
-                    { id: "phoneNumber", label: "Phone Number" },
-                    { id: "role", label: "Role" },
-                    { id: "createdAt", label: "Created At" },
-                    { id: "status", label: "Status" },
-                    { id: "" },
-                  ]}
-                />
-                <TableBody>
-                  {customers.map((row) => (
-                    <UserTableRow
-                      key={row._id}
-                      id={row._id}
-                      username={row.username}
-                      email={row.email}
-                      phoneNumber={row.phoneNumber}
-                      role={row.role}
-                      createdAt={row.createdAt}
-                      status={"active"}
-                      avatarUrl={row.avatarUrl}
-                      selected={selected.indexOf(row.username) !== -1}
-                      handleClick={(event) => handleClick(event, row.username)}
-                    />
-                  ))}
+        <Divider />
 
-                  <TableEmptyRows
-                    height={77}
-                    emptyRows={emptyRows(page, limit, customers.length)}
-                  />
-
-                  {notFound && <TableNoData query={searchQuery} />}
-                </TableBody>
-              </Table>
-            )}
-          </TableContainer>
-        </Scrollbar>
-
-        <TablePagination
-          showFirstButton
-          showLastButton
-          page={page}
-          component="div"
-          count={totalCustomers ? totalCustomers : 0}
-          rowsPerPage={limit}
-          onPageChange={handleChangePage}
-          rowsPerPageOptions={[5, 10, 15, 20]}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
+        {currentTab === "all" ? (
+          <>
+            <UserTableToolbar
+              numSelected={0}
+              searchQuery={searchQuery}
+              onSearchQuery={handleSearchQuery}
+              usernameSearch={usernameSearch}
+              emailSearch={emailSearch}
+              phoneNumberSearch={phoneNumberSearch}
+              setUsernameSearch={setUsernameSearch}
+              setEmailSearch={setEmailSearch}
+              setPhoneNumberSearch={setPhoneNumberSearch}
+            />
+            <TableContent
+              isLoading={isLoading}
+              sortDirection={sortDirection}
+              orderBy={orderBy}
+              totalCustomers={totalCustomers}
+              customers={customers}
+              selected={[]}
+              handleSort={handleSort}
+              handleSelectAllClick={null}
+              handleClick={null}
+              emptyRows={emptyRows}
+              page={page}
+              limit={limit}
+              notFound={notFound}
+              searchQuery={searchQuery}
+              handleChangePage={handleChangePage}
+              handleChangeRowsPerPage={handleChangeRowsPerPage}
+              tabStatus="all"
+            />
+          </>
+        ) : currentTab === "active" ? (
+          <>
+            <UserTableToolbar
+              numSelected={selected.length}
+              searchQuery={searchQuery}
+              onSearchQuery={handleSearchQuery}
+              usernameSearch={usernameSearch}
+              emailSearch={emailSearch}
+              phoneNumberSearch={phoneNumberSearch}
+              setUsernameSearch={setUsernameSearch}
+              setEmailSearch={setEmailSearch}
+              setPhoneNumberSearch={setPhoneNumberSearch}
+            />
+            <TableContent
+              isLoading={isLoading}
+              sortDirection={sortDirection}
+              orderBy={orderBy}
+              totalCustomers={totalActiveCustomers}
+              customers={activeCustomers}
+              selected={selected}
+              handleSort={handleSort}
+              handleSelectAllClick={handleSelectAllClick}
+              handleClick={handleClick}
+              emptyRows={emptyRows}
+              page={page}
+              limit={limit}
+              notFound={notFoundActive}
+              searchQuery={searchQuery}
+              handleChangePage={handleChangePage}
+              handleChangeRowsPerPage={handleChangeRowsPerPage}
+              tabStatus="active"
+            />
+          </>
+        ) : (
+          <>
+            <UserTableToolbar
+              numSelected={selectedDeleted.length}
+              searchQuery={searchQuery}
+              onSearchQuery={handleSearchQuery}
+              usernameSearch={usernameSearch}
+              emailSearch={emailSearch}
+              phoneNumberSearch={phoneNumberSearch}
+              setUsernameSearch={setUsernameSearch}
+              setEmailSearch={setEmailSearch}
+              setPhoneNumberSearch={setPhoneNumberSearch}
+            />
+            <TableContent
+              isLoading={isLoading}
+              sortDirection={sortDirection}
+              orderBy={orderBy}
+              totalCustomers={totalDeletedCustomers}
+              customers={deletedCustomers}
+              selected={selectedDeleted}
+              handleSort={handleSort}
+              handleSelectAllClick={handleSelectDeletedAllClick}
+              handleClick={handleClickDeleted}
+              emptyRows={emptyRows}
+              page={page}
+              limit={limit}
+              notFound={notFoundDeleted}
+              searchQuery={searchQuery}
+              handleChangePage={handleChangePage}
+              handleChangeRowsPerPage={handleChangeRowsPerPage}
+              tabStatus="deleted"
+            />
+          </>
+        )}
       </Card>
     </Container>
   );

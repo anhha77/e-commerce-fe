@@ -19,12 +19,13 @@ export default function UserTableHead({
   numSelected,
   onRequestSort,
   onSelectAllClick,
+  tabStatus,
 }) {
   const onSort = (property) => {
     onRequestSort(property);
   };
 
-  return (
+  const tableHeadWithCheckbox = (
     <TableHead>
       <TableRow>
         <TableCell padding="checkbox">
@@ -61,6 +62,43 @@ export default function UserTableHead({
         ))}
       </TableRow>
     </TableHead>
+  );
+
+  const tableHeadWithoutCheckbox = (
+    <TableHead>
+      <TableRow>
+        {headLabel.map((headCell) => (
+          <TableCell
+            key={headCell.id}
+            align={headCell.align || "left"}
+            sortDirection={orderBy === headCell.id ? order : false}
+            sx={{ width: headCell.width, minWidth: headCell.minWidth }}
+          >
+            <TableSortLabel
+              hideSortIcon
+              active={orderBy === headCell.id}
+              direction={orderBy === headCell.id ? order : "asc"}
+              onClick={() => {
+                if (headCell.id !== "status") return onSort(headCell.id);
+              }}
+            >
+              {headCell.label}
+              {orderBy === headCell.id ? (
+                <Box sx={{ ...visuallyHidden }}>
+                  {order === "desc" ? "sorted descending" : "sorted ascending"}
+                </Box>
+              ) : null}
+            </TableSortLabel>
+          </TableCell>
+        ))}
+      </TableRow>
+    </TableHead>
+  );
+
+  return (
+    <>
+      {tabStatus === "all" ? tableHeadWithoutCheckbox : tableHeadWithCheckbox}
+    </>
   );
 }
 

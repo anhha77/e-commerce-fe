@@ -11,6 +11,14 @@ const initialState = {
   customersById: {},
   totalPages: 1,
   totalCustomers: null,
+  currentPageActiveCustomers: [],
+  activeCustomersById: {},
+  totalPagesActive: 1,
+  totalActiveCustomers: null,
+  currentPageDeletedCustomers: [],
+  deletedCustomersById: {},
+  totalPagesDeleted: 1,
+  totalDeletedCustomers: null,
 };
 
 export const getCustomers = createAsyncThunk(
@@ -134,6 +142,19 @@ export const updateCustomerProfile = createAsyncThunk(
   }
 );
 
+export const deleteCustomer = createAsyncThunk(
+  "customer/deleteCustomer",
+  async ({ id }, thunkAPI) => {
+    try {
+      const response = await apiService.delete(`/admin/users/${id}`);
+      return response.data.data;
+    } catch (error) {
+      console.log(error);
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
 const slice = createSlice({
   name: "customer",
   initialState,
@@ -144,13 +165,41 @@ const slice = createSlice({
         state.isLoading = true;
       })
       .addCase(getCustomers.fulfilled, (state, action) => {
-        const { users, count, totalPages } = action.payload;
+        const {
+          users,
+          count,
+          totalPages,
+          usersActive,
+          countActive,
+          totalPagesActive,
+          usersDeleted,
+          countDeleted,
+          totalPagesDeleted,
+        } = action.payload;
+
         state.currentPageCustomers = users.map((user) => user._id);
         users.forEach((user) => {
           state.customersById[user._id] = user;
         });
         state.totalCustomers = count;
         state.totalPages = totalPages;
+
+        state.currentPageActiveCustomers = usersActive.map((user) => user._id);
+        usersActive.forEach((user) => {
+          state.activeCustomersById[user._id] = user;
+        });
+        state.totalActiveCustomers = countActive;
+        state.totalPagesActive = totalPagesActive;
+
+        state.currentPageDeletedCustomers = usersDeleted.map(
+          (user) => user._id
+        );
+        usersDeleted.forEach((user) => {
+          state.deletedCustomersById[user._id] = user;
+        });
+        state.totalDeletedCustomers = countDeleted;
+        state.totalPagesDeleted = totalPagesDeleted;
+
         state.isLoading = false;
       })
       .addCase(getCustomers.rejected, (state, action) => {
@@ -198,6 +247,20 @@ const slice = createSlice({
         toast.success("Update Customer Successfully");
       })
       .addCase(updateCustomerProfile.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
+        toast.error(action.payload.message);
+      });
+
+    builder
+      .addCase(deleteCustomer.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(deleteCustomer.fulfilled, (state, action) => {
+        state.isLoading = false;
+        toast.success("Delete Customer Successfully");
+      })
+      .addCase(deleteCustomer.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message;
         toast.error(action.payload.message);

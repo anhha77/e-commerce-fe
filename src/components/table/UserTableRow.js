@@ -24,6 +24,7 @@ export default function UserTableRow({
   phoneNumber,
   role,
   createdAt,
+  tabStatus,
   status,
   avatarUrl,
   selected,
@@ -41,7 +42,7 @@ export default function UserTableRow({
 
   let date = new Date(createdAt);
 
-  return (
+  const tabelRowWithCheckbox = (
     <>
       <TableRow hover tabIndex={-1} role="checkbox" selected={selected}>
         <TableCell padding="checkbox">
@@ -84,8 +85,8 @@ export default function UserTableRow({
         </TableCell>
 
         <TableCell>
-          <Label color={(status === "banned" && "error") || "success"}>
-            {status}
+          <Label color={status ? "error" : "success"}>
+            {status ? "Deleted" : "Active"}
           </Label>
         </TableCell>
 
@@ -118,6 +119,107 @@ export default function UserTableRow({
       </Popover>
     </>
   );
+
+  const tableRowWithoutCheckbox = (
+    <>
+      <TableRow hover tabIndex={-1} role="checkbox">
+        <TableCell component="th" scope="row">
+          <Stack direction="row" alignItems="center" spacing={2}>
+            <Avatar alt={username} src={avatarUrl} />
+            <Typography
+              variant="subtitle2"
+              component={RouterLink}
+              to={`/admin/users/${id}`}
+              sx={{
+                textDecoration: "none",
+                color: (theme) => theme.palette.text.primary,
+              }}
+              noWrap
+            >
+              {username}
+            </Typography>
+          </Stack>
+        </TableCell>
+
+        <TableCell>{email}</TableCell>
+
+        <TableCell>{phoneNumber}</TableCell>
+
+        <TableCell>{role.charAt(0).toUpperCase() + role.slice(1)}</TableCell>
+
+        <TableCell>
+          {date.toLocaleString("en-GB", {
+            day: "numeric",
+            month: "long",
+            year: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+            second: "numeric",
+          })}
+        </TableCell>
+
+        <TableCell>
+          <Label color={status ? "error" : "success"}>
+            {status ? "Deleted" : "Active"}
+          </Label>
+        </TableCell>
+
+        <TableCell align="right">
+          <IconButton onClick={handleOpenMenu}>
+            <Iconify icon="eva:more-vertical-fill" />
+          </IconButton>
+        </TableCell>
+      </TableRow>
+
+      {status ? (
+        <Popover
+          open={!!open}
+          anchorEl={open}
+          onClose={handleCloseMenu}
+          anchorOrigin={{ vertical: "top", horizontal: "left" }}
+          transformOrigin={{ vertical: "top", horizontal: "right" }}
+          PaperProps={{
+            sx: { width: 200 },
+          }}
+        >
+          <MenuItem onClick={handleCloseMenu}>
+            <Iconify icon="carbon:reset" sx={{ mr: 2 }} />
+            Restore
+          </MenuItem>
+
+          <MenuItem onClick={handleCloseMenu} sx={{ color: "error.main" }}>
+            <Iconify icon="eva:trash-2-outline" sx={{ mr: 2 }} />
+            Delete Pernamently
+          </MenuItem>
+        </Popover>
+      ) : (
+        <Popover
+          open={!!open}
+          anchorEl={open}
+          onClose={handleCloseMenu}
+          anchorOrigin={{ vertical: "top", horizontal: "left" }}
+          transformOrigin={{ vertical: "top", horizontal: "right" }}
+          PaperProps={{
+            sx: { width: 140 },
+          }}
+        >
+          <MenuItem onClick={handleCloseMenu}>
+            <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
+            Edit
+          </MenuItem>
+
+          <MenuItem onClick={handleCloseMenu} sx={{ color: "error.main" }}>
+            <Iconify icon="eva:trash-2-outline" sx={{ mr: 2 }} />
+            Delete
+          </MenuItem>
+        </Popover>
+      )}
+    </>
+  );
+
+  return (
+    <>{tabStatus === "all" ? tableRowWithoutCheckbox : tabelRowWithCheckbox}</>
+  );
 }
 
 UserTableRow.propTypes = {
@@ -128,5 +230,5 @@ UserTableRow.propTypes = {
   name: PropTypes.any,
   role: PropTypes.any,
   selected: PropTypes.any,
-  status: PropTypes.string,
+  status: PropTypes.bool,
 };
