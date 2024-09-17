@@ -1,11 +1,9 @@
-import Reacy from "react";
-import { Route, Routes, useLocation } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import BlankLayout from "../layouts/BlankLayout";
 import MainLayout from "../layouts/user/MainLayout";
 import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
 import AuthRequire from "./AuthRequire";
-import useAuth from "../hooks/useAuth";
 import HomePage from "../pages/HomePage";
 import NotFoundPage from "../pages/NotFoundPage";
 import AdminLoginPage from "../pages/admin/AdminLoginPage";
@@ -18,9 +16,6 @@ import ProfilePage from "../pages/ProfilePage";
 import CustomerProfilePage from "../pages/admin/CustomerProfilePage";
 
 export default function Router() {
-  const location = useLocation();
-  const { user } = useAuth();
-
   return (
     <>
       <Routes>

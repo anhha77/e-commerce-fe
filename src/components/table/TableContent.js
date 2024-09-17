@@ -30,6 +30,7 @@ function TableContent({
   handleChangePage,
   handleChangeRowsPerPage,
   tabStatus,
+  handleDelete,
 }) {
   return (
     <>
@@ -72,6 +73,7 @@ function TableContent({
                     avatarUrl={row.avatarUrl}
                     selected={selected.indexOf(row.username) !== -1}
                     handleClick={(event) => handleClick(event, row.username)}
+                    handleDelete={handleDelete}
                   />
                 ))}
 
