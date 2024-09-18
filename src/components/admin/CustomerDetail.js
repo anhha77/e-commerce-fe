@@ -28,6 +28,7 @@ import {
 } from "../../features/customerSlice";
 import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
+import RestoreIcon from "@mui/icons-material/Restore";
 
 const phoneRegExp =
   /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
@@ -127,37 +128,96 @@ function CustomerDetail({ user }) {
             <Card>
               <CardHeader title="Security" action={<SecurityIcon />} />
               <CardContent sx={{ px: "24px" }}>
-                <Button
-                  variant="contained"
-                  sx={{
-                    backgroundColor: (theme) => theme.palette.error.main,
-                    width: 150,
-                    "&:hover": {
-                      backgroundColor: (theme) => theme.palette.error.dark,
-                    },
-                  }}
-                  onClick={() =>
-                    dispatch(deleteCustomer({ id: user._id })).then(() =>
-                      navigate("/admin/users", { replace: true })
-                    )
-                  }
-                >
-                  Delete
-                </Button>
-                <Typography
-                  variant="caption"
-                  sx={{
-                    mt: 2,
-                    display: "block",
-                    textAlign: "left",
-                    color: "text.secondary",
-                  }}
-                >
-                  A deleted customer cannot be restored. All data will be
-                  permanently removed.
-                </Typography>
+                {user.isDeleted ? (
+                  <>
+                    <Button
+                      variant="contained"
+                      sx={{
+                        backgroundColor: (theme) => theme.palette.error.main,
+                        width: 200,
+                        "&:hover": {
+                          backgroundColor: (theme) => theme.palette.error.dark,
+                        },
+                      }}
+                    >
+                      Delete Pernament
+                    </Button>
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        mt: 2,
+                        display: "block",
+                        textAlign: "left",
+                        color: "text.secondary",
+                      }}
+                    >
+                      Delete customer pernamently and after this action you
+                      cannot restore the user.
+                    </Typography>
+                  </>
+                ) : (
+                  <>
+                    <Button
+                      variant="contained"
+                      sx={{
+                        backgroundColor: (theme) => theme.palette.error.main,
+                        width: 150,
+                        "&:hover": {
+                          backgroundColor: (theme) => theme.palette.error.dark,
+                        },
+                      }}
+                      onClick={() =>
+                        dispatch(deleteCustomer({ id: user._id })).then(() =>
+                          navigate("/admin/users", { replace: true })
+                        )
+                      }
+                    >
+                      Delete
+                    </Button>
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        mt: 2,
+                        display: "block",
+                        textAlign: "left",
+                        color: "text.secondary",
+                      }}
+                    >
+                      A deleted customer cannot be updated anything unless it be
+                      restored.
+                    </Typography>
+                  </>
+                )}
               </CardContent>
             </Card>
+            {user.isDeleted ? (
+              <>
+                <Card>
+                  <CardHeader title="Restore User" action={<RestoreIcon />} />
+                  <CardContent sx={{ px: "24px" }}>
+                    <Button
+                      variant="contained"
+                      sx={{
+                        width: 150,
+                      }}
+                    >
+                      Restore
+                    </Button>
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        mt: 2,
+                        display: "block",
+                        textAlign: "left",
+                        color: "text.secondary",
+                      }}
+                    >
+                      Restore user.
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </>
+            ) : null}
           </Stack>
         </Grid>
 
@@ -196,6 +256,7 @@ function CustomerDetail({ user }) {
                   variant="contained"
                   loading={isSubmitting || isLoading}
                   sx={{ alignSelf: "flex-end" }}
+                  disabled={user.isDeleted}
                 >
                   Save Changes
                 </LoadingButton>
@@ -209,6 +270,7 @@ function CustomerDetail({ user }) {
                     variant="text"
                     startIcon={<AddIcon />}
                     onClick={handleOpenDialog}
+                    disabled={user.isDeleted}
                   >
                     Address
                   </Button>

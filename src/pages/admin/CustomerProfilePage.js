@@ -1,7 +1,15 @@
 import React, { useEffect, useState } from "react";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
-import { Box, Container, Stack, Tab, Tabs, Typography } from "@mui/material";
+import {
+  Box,
+  Chip,
+  Container,
+  Stack,
+  Tab,
+  Tabs,
+  Typography,
+} from "@mui/material";
 import { capitalCase } from "change-case";
 import UserOrderList from "../../components/user/UserOrderList";
 import { useParams } from "react-router-dom";
@@ -11,6 +19,8 @@ import LoadingScreen from "../../components/LoadingScreen";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { Link as RouterLink } from "react-router-dom";
 import CustomerDetail from "../../components/admin/CustomerDetail";
+import CheckIcon from "@mui/icons-material/Check";
+import ClearIcon from "@mui/icons-material/Clear";
 
 function CustomerProfilePage() {
   const { id } = useParams();
@@ -63,9 +73,25 @@ function CustomerProfilePage() {
             </Typography>
           </Stack>
 
-          <Typography variant="h5" gutterBottom>
-            {selectedCustomer?.username}
-          </Typography>
+          <Stack direction="row" gap={2}>
+            <Typography variant="h5" gutterBottom>
+              {selectedCustomer?.username}
+            </Typography>
+            {selectedCustomer?.isDeleted ? (
+              <Chip
+                label="Deleted"
+                color="error"
+                icon={<ClearIcon sx={{ width: "16px" }} />}
+              />
+            ) : (
+              <Chip
+                label="Active"
+                color="success"
+                icon={<CheckIcon sx={{ width: "16px" }} />}
+              />
+            )}
+          </Stack>
+
           <Tabs
             value={currentTab}
             scrollButtons="auto"
