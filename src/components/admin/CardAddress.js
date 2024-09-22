@@ -103,7 +103,11 @@ function CardAddress({ user, item, index }) {
           </Box>
         }
         action={
-          <IconButton aria-label="settings" onClick={handleOpen}>
+          <IconButton
+            aria-label="settings"
+            onClick={handleOpen}
+            disabled={user.isDeleted}
+          >
             <MoreVertIcon />
           </IconButton>
         }

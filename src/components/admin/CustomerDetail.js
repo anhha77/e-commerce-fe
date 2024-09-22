@@ -29,6 +29,7 @@ import {
 import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
 import RestoreIcon from "@mui/icons-material/Restore";
+import LoadingScreen from "../LoadingScreen";
 
 const phoneRegExp =
   /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
@@ -49,6 +50,7 @@ function CustomerDetail({ user }) {
   const isLoading = useSelector((state) => state.profile.isLoading);
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+  console.log(user);
 
   const handleOpenDialog = () => {
     setOpen(true);
@@ -99,229 +101,245 @@ function CustomerDetail({ user }) {
   );
 
   return (
-    <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
-      <Grid container spacing={3}>
-        <Grid item xs={12} md={4}>
-          <Stack spacing={3}>
-            <Card sx={{ py: 10, px: 3, textAlign: "center" }}>
-              <FUploadAvatar
-                name="avatarUrl"
-                maxSize={3145728}
-                onDrop={handleDrop}
-                helperText={
-                  <Typography
-                    variant="caption"
-                    sx={{
-                      mt: 2,
-                      mx: "auto",
-                      display: "block",
-                      textAlign: "center",
-                      color: "text.secondary",
-                    }}
-                  >
-                    Allowed *.jpeg, *.jpg, *.png, *.gif
-                    <br /> max size of {fData(3145728)}
-                  </Typography>
-                }
-              />
-            </Card>
-            <Card>
-              <CardHeader title="Security" action={<SecurityIcon />} />
-              <CardContent sx={{ px: "24px" }}>
-                {user.isDeleted ? (
-                  <>
-                    <Button
-                      variant="contained"
-                      sx={{
-                        backgroundColor: (theme) => theme.palette.error.main,
-                        width: 200,
-                        "&:hover": {
-                          backgroundColor: (theme) => theme.palette.error.dark,
-                        },
-                      }}
-                    >
-                      Delete Pernament
-                    </Button>
-                    <Typography
-                      variant="caption"
-                      sx={{
-                        mt: 2,
-                        display: "block",
-                        textAlign: "left",
-                        color: "text.secondary",
-                      }}
-                    >
-                      Delete customer pernamently and after this action you
-                      cannot restore the user.
-                    </Typography>
-                  </>
-                ) : (
-                  <>
-                    <Button
-                      variant="contained"
-                      sx={{
-                        backgroundColor: (theme) => theme.palette.error.main,
-                        width: 150,
-                        "&:hover": {
-                          backgroundColor: (theme) => theme.palette.error.dark,
-                        },
-                      }}
-                      onClick={() =>
-                        dispatch(deleteCustomer({ id: user._id })).then(() =>
-                          navigate("/admin/users", { replace: true })
-                        )
-                      }
-                    >
-                      Delete
-                    </Button>
-                    <Typography
-                      variant="caption"
-                      sx={{
-                        mt: 2,
-                        display: "block",
-                        textAlign: "left",
-                        color: "text.secondary",
-                      }}
-                    >
-                      A deleted customer cannot be updated anything unless it be
-                      restored.
-                    </Typography>
-                  </>
-                )}
-              </CardContent>
-            </Card>
-            {user.isDeleted ? (
-              <>
-                <Card>
-                  <CardHeader title="Restore User" action={<RestoreIcon />} />
-                  <CardContent sx={{ px: "24px" }}>
-                    <Button
-                      variant="contained"
-                      sx={{
-                        width: 150,
-                      }}
-                    >
-                      Restore
-                    </Button>
-                    <Typography
-                      variant="caption"
-                      sx={{
-                        mt: 2,
-                        display: "block",
-                        textAlign: "left",
-                        color: "text.secondary",
-                      }}
-                    >
-                      Restore user.
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </>
-            ) : null}
-          </Stack>
-        </Grid>
-
-        <Grid item xs={12} md={8}>
-          <Stack spacing={3}>
-            <Card sx={{ p: 3 }}>
-              <Box
-                sx={{
-                  display: "grid",
-                  rowGap: 3,
-                  columnGap: 2,
-                  gridTemplateColumns: {
-                    xs: "repeat(1, 1fr)",
-                    sm: "repeat(2, 1fr)",
-                  },
-                }}
-              >
-                <FTextField name="username" label="Username" disabled />
-                <FTextField name="email" label="Email" disabled />
-                <FTextField name="role" label="Role" disabled />
-                <FTextField name="phoneNumber" label="Phone number" />
-              </Box>
-
-              <Stack spacing={3} sx={{ mt: 3 }}>
-                <FDatePicker
-                  name="birthOfDate"
-                  label="Birthdate"
-                  sx={{ width: "100%", justifyContent: "flex-end" }}
-                  error={errors?.fromDate?.message}
-                  defaultValue={dayjs(
-                    `${user?.birthOfDate || new Date().toLocaleString("en-GB")}`
-                  )}
-                />
-                <LoadingButton
-                  type="submit"
-                  variant="contained"
-                  loading={isSubmitting || isLoading}
-                  sx={{ alignSelf: "flex-end" }}
-                  disabled={user.isDeleted}
-                >
-                  Save Changes
-                </LoadingButton>
-              </Stack>
-            </Card>
-            <Card>
-              <CardHeader
-                title="Address"
-                action={
-                  <Button
-                    variant="text"
-                    startIcon={<AddIcon />}
-                    onClick={handleOpenDialog}
-                    disabled={user.isDeleted}
-                  >
-                    Address
-                  </Button>
-                }
-              />
-              <CreateAddressForm
-                user={user}
-                open={open}
-                handleClose={handleCloseDialog}
-              />
-              <CardContent>
-                <Stack spacing={2}>
-                  {user?.address.length === 0 ? (
-                    <>
-                      <Box
-                        sx={{
-                          height: { xs: "200px", md: "300px" },
-                          backgroundImage:
-                            "url('/assets/new_images/add_address.jpg')",
-                          backgroundSize: 300,
-                          backgroundRepeat: "no-repeat",
-                          backgroundPosition: "center",
-                        }}
-                      />
+    <>
+      {isLoading ? (
+        <LoadingScreen />
+      ) : (
+        <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={4}>
+              <Stack spacing={3}>
+                <Card sx={{ py: 10, px: 3, textAlign: "center" }}>
+                  <FUploadAvatar
+                    name="avatarUrl"
+                    maxSize={3145728}
+                    onDrop={handleDrop}
+                    helperText={
                       <Typography
-                        variant="p"
+                        variant="caption"
                         sx={{
-                          color: (theme) => theme.palette.text.disabled,
+                          mt: 2,
+                          mx: "auto",
+                          display: "block",
                           textAlign: "center",
+                          color: "text.secondary",
                         }}
                       >
-                        Add address location
+                        Allowed *.jpeg, *.jpg, *.png, *.gif
+                        <br /> max size of {fData(3145728)}
                       </Typography>
-                    </>
-                  ) : (
-                    user?.address.map((item, index) => (
-                      <CardAddress
-                        key={index}
-                        user={user}
-                        item={item}
-                        index={index}
+                    }
+                  />
+                </Card>
+                <Card>
+                  <CardHeader title="Security" action={<SecurityIcon />} />
+                  <CardContent sx={{ px: "24px" }}>
+                    {user.isDeleted ? (
+                      <>
+                        <Button
+                          variant="contained"
+                          sx={{
+                            backgroundColor: (theme) =>
+                              theme.palette.error.main,
+                            width: 200,
+                            "&:hover": {
+                              backgroundColor: (theme) =>
+                                theme.palette.error.dark,
+                            },
+                          }}
+                        >
+                          Delete Pernament
+                        </Button>
+                        <Typography
+                          variant="caption"
+                          sx={{
+                            mt: 2,
+                            display: "block",
+                            textAlign: "left",
+                            color: "text.secondary",
+                          }}
+                        >
+                          Delete customer pernamently and after this action you
+                          cannot restore the user.
+                        </Typography>
+                      </>
+                    ) : (
+                      <>
+                        <Button
+                          variant="contained"
+                          sx={{
+                            backgroundColor: (theme) =>
+                              theme.palette.error.main,
+                            width: 150,
+                            "&:hover": {
+                              backgroundColor: (theme) =>
+                                theme.palette.error.dark,
+                            },
+                          }}
+                          onClick={() =>
+                            dispatch(deleteCustomer({ id: user._id })).then(
+                              () => navigate("/admin/users", { replace: true })
+                            )
+                          }
+                        >
+                          Delete
+                        </Button>
+                        <Typography
+                          variant="caption"
+                          sx={{
+                            mt: 2,
+                            display: "block",
+                            textAlign: "left",
+                            color: "text.secondary",
+                          }}
+                        >
+                          A deleted customer cannot be updated anything unless
+                          it be restored.
+                        </Typography>
+                      </>
+                    )}
+                  </CardContent>
+                </Card>
+                {user.isDeleted ? (
+                  <>
+                    <Card>
+                      <CardHeader
+                        title="Restore User"
+                        action={<RestoreIcon />}
                       />
-                    ))
-                  )}
-                </Stack>
-              </CardContent>
-            </Card>
-          </Stack>
-        </Grid>
-      </Grid>
-    </FormProvider>
+                      <CardContent sx={{ px: "24px" }}>
+                        <Button
+                          variant="contained"
+                          sx={{
+                            width: 150,
+                          }}
+                        >
+                          Restore
+                        </Button>
+                        <Typography
+                          variant="caption"
+                          sx={{
+                            mt: 2,
+                            display: "block",
+                            textAlign: "left",
+                            color: "text.secondary",
+                          }}
+                        >
+                          Restore user.
+                        </Typography>
+                      </CardContent>
+                    </Card>
+                  </>
+                ) : null}
+              </Stack>
+            </Grid>
+
+            <Grid item xs={12} md={8}>
+              <Stack spacing={3}>
+                <Card sx={{ p: 3 }}>
+                  <Box
+                    sx={{
+                      display: "grid",
+                      rowGap: 3,
+                      columnGap: 2,
+                      gridTemplateColumns: {
+                        xs: "repeat(1, 1fr)",
+                        sm: "repeat(2, 1fr)",
+                      },
+                    }}
+                  >
+                    <FTextField name="username" label="Username" disabled />
+                    <FTextField name="email" label="Email" disabled />
+                    <FTextField name="role" label="Role" disabled />
+                    <FTextField name="phoneNumber" label="Phone number" />
+                  </Box>
+
+                  <Stack spacing={3} sx={{ mt: 3 }}>
+                    <FDatePicker
+                      name="birthOfDate"
+                      label="Birthdate"
+                      sx={{ width: "100%", justifyContent: "flex-end" }}
+                      error={errors?.fromDate?.message}
+                      defaultValue={dayjs(
+                        `${
+                          user?.birthOfDate ||
+                          new Date().toLocaleString("en-GB")
+                        }`
+                      )}
+                    />
+                    <LoadingButton
+                      type="submit"
+                      variant="contained"
+                      loading={isSubmitting || isLoading}
+                      sx={{ alignSelf: "flex-end" }}
+                      disabled={user.isDeleted}
+                    >
+                      Save Changes
+                    </LoadingButton>
+                  </Stack>
+                </Card>
+                <Card>
+                  <CardHeader
+                    title="Address"
+                    action={
+                      <Button
+                        variant="text"
+                        startIcon={<AddIcon />}
+                        onClick={handleOpenDialog}
+                        disabled={user.isDeleted}
+                      >
+                        Address
+                      </Button>
+                    }
+                  />
+                  <CreateAddressForm
+                    user={user}
+                    open={open}
+                    handleClose={handleCloseDialog}
+                  />
+                  <CardContent>
+                    <Stack spacing={2}>
+                      {user?.address.length === 0 ? (
+                        <>
+                          <Box
+                            sx={{
+                              height: { xs: "200px", md: "300px" },
+                              backgroundImage:
+                                "url('/assets/new_images/add_address.jpg')",
+                              backgroundSize: 300,
+                              backgroundRepeat: "no-repeat",
+                              backgroundPosition: "center",
+                            }}
+                          />
+                          <Typography
+                            variant="p"
+                            sx={{
+                              color: (theme) => theme.palette.text.disabled,
+                              textAlign: "center",
+                            }}
+                          >
+                            Add address location
+                          </Typography>
+                        </>
+                      ) : (
+                        user?.address.map((item, index) => (
+                          <CardAddress
+                            key={index}
+                            user={user}
+                            item={item}
+                            index={index}
+                          />
+                        ))
+                      )}
+                    </Stack>
+                  </CardContent>
+                </Card>
+              </Stack>
+            </Grid>
+          </Grid>
+        </FormProvider>
+      )}
+    </>
   );
 }
 
