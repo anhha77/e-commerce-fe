@@ -102,7 +102,7 @@ function CustomerDetail({ user }) {
 
   return (
     <>
-      {isLoading ? (
+      {isLoading || !user ? (
         <LoadingScreen />
       ) : (
         <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>

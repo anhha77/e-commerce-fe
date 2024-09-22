@@ -31,6 +31,7 @@ function CustomerProfilePage() {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    console.log("hi");
     dispatch(getSingleCustomer({ id }));
   }, [dispatch, id]);
 
@@ -49,7 +50,7 @@ function CustomerProfilePage() {
 
   return (
     <>
-      {isLoading ? (
+      {isLoading || !selectedCustomer ? (
         <LoadingScreen />
       ) : (
         <Container>
