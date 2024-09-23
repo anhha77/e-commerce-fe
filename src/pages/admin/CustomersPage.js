@@ -12,7 +12,11 @@ import Iconify from "../../components/Iconify";
 
 import UserTableToolbar from "../../components/table/UserTableToolbar";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteCustomer, getCustomers } from "../../features/customerSlice";
+import {
+  deleteCustomer,
+  getCustomers,
+  restoreCustomer,
+} from "../../features/customerSlice";
 
 import { useNavigate } from "react-router-dom";
 import UserStatusNav from "../../components/table/UserStatusNav";
@@ -168,6 +172,23 @@ export default function CustomersPage() {
     );
   };
 
+  const handleRestoreCustomer = (id) => {
+    dispatch(restoreCustomer({ id })).then(() =>
+      dispatch(
+        getCustomers({
+          page,
+          limit,
+          searchQuery,
+          usernameSearch,
+          emailSearch,
+          phoneNumberSearch,
+          orderBy,
+          sortDirection,
+        })
+      )
+    );
+  };
+
   const notFound = !customers.length && !!searchQuery;
 
   const notFoundActive = !activeCustomers.length && !!searchQuery;
@@ -261,6 +282,7 @@ export default function CustomersPage() {
               handleChangeRowsPerPage={handleChangeRowsPerPage}
               tabStatus="all"
               handleDelete={handleDeleteCustomer}
+              handleRestore={handleRestoreCustomer}
             />
           </>
         ) : currentTab === "active" ? (
@@ -295,6 +317,7 @@ export default function CustomersPage() {
               handleChangeRowsPerPage={handleChangeRowsPerPage}
               tabStatus="active"
               handleDelete={handleDeleteCustomer}
+              handleRestore={handleRestoreCustomer}
             />
           </>
         ) : (
@@ -329,6 +352,7 @@ export default function CustomersPage() {
               handleChangeRowsPerPage={handleChangeRowsPerPage}
               tabStatus="deleted"
               handleDelete={handleDeleteCustomer}
+              handleRestore={handleRestoreCustomer}
             />
           </>
         )}

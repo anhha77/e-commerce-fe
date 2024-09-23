@@ -24,6 +24,7 @@ import CardAddress from "./CardAddress";
 import CreateAddressForm from "./CreateAddressForm";
 import {
   deleteCustomer,
+  restoreCustomer,
   updateCustomerProfile,
 } from "../../features/customerSlice";
 import dayjs from "dayjs";
@@ -213,6 +214,11 @@ function CustomerDetail({ user }) {
                           sx={{
                             width: 150,
                           }}
+                          onClick={() =>
+                            dispatch(restoreCustomer({ id: user._id })).then(
+                              () => navigate("/admin/users", { replace: true })
+                            )
+                          }
                         >
                           Restore
                         </Button>

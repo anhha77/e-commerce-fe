@@ -30,6 +30,7 @@ export default function UserTableRow({
   selected,
   handleClick,
   handleDelete,
+  handleRestore,
 }) {
   const [open, setOpen] = useState(null);
   const navigate = useNavigate();
@@ -49,6 +50,11 @@ export default function UserTableRow({
 
   const handleDeleteCustomer = () => {
     handleDelete(id);
+    setOpen(null);
+  };
+
+  const handleRestoreCustomer = () => {
+    handleRestore(id);
     setOpen(null);
   };
 
@@ -119,15 +125,52 @@ export default function UserTableRow({
           sx: { width: 140 },
         }}
       >
-        <MenuItem onClick={handleCloseMenu}>
-          <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
-          Edit
-        </MenuItem>
+        {status ? (
+          <Popover
+            open={!!open}
+            anchorEl={open}
+            onClose={handleCloseMenu}
+            anchorOrigin={{ vertical: "top", horizontal: "left" }}
+            transformOrigin={{ vertical: "top", horizontal: "right" }}
+            PaperProps={{
+              sx: { width: 200 },
+            }}
+          >
+            <MenuItem onClick={handleRestoreCustomer}>
+              <Iconify icon="carbon:reset" sx={{ mr: 2 }} />
+              Restore
+            </MenuItem>
 
-        <MenuItem onClick={handleCloseMenu} sx={{ color: "error.main" }}>
-          <Iconify icon="eva:trash-2-outline" sx={{ mr: 2 }} />
-          Delete
-        </MenuItem>
+            <MenuItem onClick={handleCloseMenu} sx={{ color: "error.main" }}>
+              <Iconify icon="eva:trash-2-outline" sx={{ mr: 2 }} />
+              Delete Pernamently
+            </MenuItem>
+          </Popover>
+        ) : (
+          <Popover
+            open={!!open}
+            anchorEl={open}
+            onClose={handleCloseMenu}
+            anchorOrigin={{ vertical: "top", horizontal: "left" }}
+            transformOrigin={{ vertical: "top", horizontal: "right" }}
+            PaperProps={{
+              sx: { width: 140 },
+            }}
+          >
+            <MenuItem onClick={handleNavigateEdit}>
+              <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
+              Edit
+            </MenuItem>
+
+            <MenuItem
+              onClick={handleDeleteCustomer}
+              sx={{ color: "error.main" }}
+            >
+              <Iconify icon="eva:trash-2-outline" sx={{ mr: 2 }} />
+              Delete
+            </MenuItem>
+          </Popover>
+        )}
       </Popover>
     </>
   );
@@ -194,7 +237,7 @@ export default function UserTableRow({
             sx: { width: 200 },
           }}
         >
-          <MenuItem onClick={handleCloseMenu}>
+          <MenuItem onClick={handleRestoreCustomer}>
             <Iconify icon="carbon:reset" sx={{ mr: 2 }} />
             Restore
           </MenuItem>

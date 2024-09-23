@@ -31,6 +31,7 @@ function TableContent({
   handleChangeRowsPerPage,
   tabStatus,
   handleDelete,
+  handleRestore,
 }) {
   return (
     <>
@@ -74,6 +75,7 @@ function TableContent({
                     selected={selected.indexOf(row.username) !== -1}
                     handleClick={(event) => handleClick(event, row.username)}
                     handleDelete={handleDelete}
+                    handleRestore={handleRestore}
                   />
                 ))}
 
