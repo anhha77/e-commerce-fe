@@ -29,6 +29,7 @@ export default function UserTableToolbar({
   setUsernameSearch,
   setEmailSearch,
   setPhoneNumberSearch,
+  handleDeleteMultiUsers,
 }) {
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -127,7 +128,7 @@ export default function UserTableToolbar({
 
       {numSelected > 0 ? (
         <Tooltip title="Delete">
-          <IconButton>
+          <IconButton onClick={handleDeleteMultiUsers}>
             <Iconify icon="eva:trash-2-fill" />
           </IconButton>
         </Tooltip>

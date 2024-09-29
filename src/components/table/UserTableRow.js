@@ -31,6 +31,7 @@ export default function UserTableRow({
   handleClick,
   handleDelete,
   handleRestore,
+  handleDeletePernament,
 }) {
   const [open, setOpen] = useState(null);
   const navigate = useNavigate();
@@ -55,6 +56,11 @@ export default function UserTableRow({
 
   const handleRestoreCustomer = () => {
     handleRestore(id);
+    setOpen(null);
+  };
+
+  const handleDeletePernamentCustomer = () => {
+    handleDeletePernament(id);
     setOpen(null);
   };
 
@@ -141,7 +147,10 @@ export default function UserTableRow({
               Restore
             </MenuItem>
 
-            <MenuItem onClick={handleCloseMenu} sx={{ color: "error.main" }}>
+            <MenuItem
+              onClick={handleDeletePernamentCustomer}
+              sx={{ color: "error.main" }}
+            >
               <Iconify icon="eva:trash-2-outline" sx={{ mr: 2 }} />
               Delete Pernamently
             </MenuItem>
@@ -242,7 +251,10 @@ export default function UserTableRow({
             Restore
           </MenuItem>
 
-          <MenuItem onClick={handleCloseMenu} sx={{ color: "error.main" }}>
+          <MenuItem
+            onClick={handleDeletePernamentCustomer}
+            sx={{ color: "error.main" }}
+          >
             <Iconify icon="eva:trash-2-outline" sx={{ mr: 2 }} />
             Delete Pernamently
           </MenuItem>

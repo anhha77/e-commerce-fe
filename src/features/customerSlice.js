@@ -155,6 +155,20 @@ export const deleteCustomer = createAsyncThunk(
   }
 );
 
+export const deleteMultiCustomers = createAsyncThunk(
+  "customer/deleteMultiCustomers",
+  async ({ usersIdDeleted }, thunkAPI) => {
+    try {
+      const response = await apiService.delete(
+        `/admin/users/delete/multi?usersIdDeleted=${usersIdDeleted}`
+      );
+      return response.data.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
 export const restoreCustomer = createAsyncThunk(
   "customer/restoreCustomer",
   async ({ id }, thunkAPI) => {
@@ -163,6 +177,32 @@ export const restoreCustomer = createAsyncThunk(
       return response.data.data;
     } catch (error) {
       console.log(error);
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
+export const deletePernamentCustomer = createAsyncThunk(
+  "customer/deletePernamentCustomer",
+  async ({ id }, thunkAPI) => {
+    try {
+      const response = await apiService.delete(`/admin/users/pernament/${id}`);
+      return response.data.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
+export const deletePernamentMultiCustomers = createAsyncThunk(
+  "customer/deletePernamentMultiCustomers",
+  async ({ usersIdDeleted }, thunkAPI) => {
+    try {
+      const response = await apiService.delete(
+        `/admin/users/pernament/delete/multi?usersIdDeleted=${usersIdDeleted}`
+      );
+      return response.data.data;
+    } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
   }
@@ -280,6 +320,20 @@ const slice = createSlice({
       });
 
     builder
+      .addCase(deleteMultiCustomers.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(deleteMultiCustomers.fulfilled, (state, action) => {
+        state.isLoading = false;
+        toast.success("Delete Customers Successfully");
+      })
+      .addCase(deleteMultiCustomers.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
+        toast.error(action.payload.message);
+      });
+
+    builder
       .addCase(restoreCustomer.pending, (state) => {
         state.isLoading = true;
       })
@@ -288,6 +342,34 @@ const slice = createSlice({
         toast.success("Restore Customer Successfully");
       })
       .addCase(restoreCustomer.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
+        toast.error(action.payload.message);
+      });
+
+    builder
+      .addCase(deletePernamentCustomer.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(deletePernamentCustomer.fulfilled, (state, action) => {
+        state.isLoading = false;
+        toast.success("Delete Pernament Customer Successfully");
+      })
+      .addCase(deletePernamentCustomer.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
+        toast.error(action.payload.message);
+      });
+
+    builder
+      .addCase(deletePernamentMultiCustomers.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(deletePernamentMultiCustomers.fulfilled, (state, action) => {
+        state.isLoading = false;
+        toast.success("Delete Pernament Customers Successfully");
+      })
+      .addCase(deletePernamentMultiCustomers.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message;
         toast.error(action.payload.message);

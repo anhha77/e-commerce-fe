@@ -14,6 +14,9 @@ import UserTableToolbar from "../../components/table/UserTableToolbar";
 import { useDispatch, useSelector } from "react-redux";
 import {
   deleteCustomer,
+  deleteMultiCustomers,
+  deletePernamentCustomer,
+  deletePernamentMultiCustomers,
   getCustomers,
   restoreCustomer,
 } from "../../features/customerSlice";
@@ -89,11 +92,11 @@ export default function CustomersPage() {
     setSelected([]);
   };
 
-  const handleClick = (event, username) => {
-    const selectedIndex = selected.indexOf(username);
+  const handleClick = (event, userId) => {
+    const selectedIndex = selected.indexOf(userId);
     let newSelected = [];
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, username);
+      newSelected = newSelected.concat(selected, userId);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
@@ -111,11 +114,11 @@ export default function CustomersPage() {
     setSelectedDeleted([]);
   };
 
-  const handleClickDeleted = (event, username) => {
-    const selectedDeletedIndex = selectedDeleted.indexOf(username);
+  const handleClickDeleted = (event, userId) => {
+    const selectedDeletedIndex = selectedDeleted.indexOf(userId);
     let newSelectedDeleted = [];
     if (selectedDeletedIndex === -1) {
-      newSelectedDeleted = newSelectedDeleted.concat(selectedDeleted, username);
+      newSelectedDeleted = newSelectedDeleted.concat(selectedDeleted, userId);
     } else if (selectedDeletedIndex === 0) {
       newSelectedDeleted = newSelectedDeleted.concat(selectedDeleted.slice(1));
     } else if (selectedDeletedIndex === selectedDeleted.length - 1) {
@@ -172,6 +175,23 @@ export default function CustomersPage() {
     );
   };
 
+  const handleDeleteMultiCustomers = (usersId) => {
+    dispatch(deleteMultiCustomers({ usersIdDeleted: usersId })).then(() =>
+      dispatch(
+        getCustomers({
+          page,
+          limit,
+          searchQuery,
+          usernameSearch,
+          emailSearch,
+          phoneNumberSearch,
+          orderBy,
+          sortDirection,
+        })
+      )
+    );
+  };
+
   const handleRestoreCustomer = (id) => {
     dispatch(restoreCustomer({ id })).then(() =>
       dispatch(
@@ -186,6 +206,41 @@ export default function CustomersPage() {
           sortDirection,
         })
       )
+    );
+  };
+
+  const handleDeletePernamentCustomer = (id) => {
+    dispatch(deletePernamentCustomer({ id })).then(() =>
+      dispatch(
+        getCustomers({
+          page,
+          limit,
+          searchQuery,
+          usernameSearch,
+          emailSearch,
+          phoneNumberSearch,
+          orderBy,
+          sortDirection,
+        })
+      )
+    );
+  };
+
+  const handleDeletePernamentMultiCustomers = (usersId) => {
+    dispatch(deletePernamentMultiCustomers({ usersIdDeleted: usersId })).then(
+      () =>
+        dispatch(
+          getCustomers({
+            page,
+            limit,
+            searchQuery,
+            usernameSearch,
+            emailSearch,
+            phoneNumberSearch,
+            orderBy,
+            sortDirection,
+          })
+        )
     );
   };
 
@@ -262,6 +317,7 @@ export default function CustomersPage() {
               setUsernameSearch={setUsernameSearch}
               setEmailSearch={setEmailSearch}
               setPhoneNumberSearch={setPhoneNumberSearch}
+              handleDeleteMultiUsers={null}
             />
             <TableContent
               isLoading={isLoading}
@@ -283,11 +339,13 @@ export default function CustomersPage() {
               tabStatus="all"
               handleDelete={handleDeleteCustomer}
               handleRestore={handleRestoreCustomer}
+              handleDeletePernament={handleDeletePernamentCustomer}
             />
           </>
         ) : currentTab === "active" ? (
           <>
             <UserTableToolbar
+              selected={selected}
               numSelected={selected.length}
               searchQuery={searchQuery}
               onSearchQuery={handleSearchQuery}
@@ -297,6 +355,10 @@ export default function CustomersPage() {
               setUsernameSearch={setUsernameSearch}
               setEmailSearch={setEmailSearch}
               setPhoneNumberSearch={setPhoneNumberSearch}
+              handleDeleteMultiUsers={() => {
+                handleDeleteMultiCustomers(selected);
+                setSelected([]);
+              }}
             />
             <TableContent
               isLoading={isLoading}
@@ -318,11 +380,13 @@ export default function CustomersPage() {
               tabStatus="active"
               handleDelete={handleDeleteCustomer}
               handleRestore={handleRestoreCustomer}
+              handleDeletePernament={handleDeletePernamentCustomer}
             />
           </>
         ) : (
           <>
             <UserTableToolbar
+              selected={selectedDeleted}
               numSelected={selectedDeleted.length}
               searchQuery={searchQuery}
               onSearchQuery={handleSearchQuery}
@@ -332,6 +396,10 @@ export default function CustomersPage() {
               setUsernameSearch={setUsernameSearch}
               setEmailSearch={setEmailSearch}
               setPhoneNumberSearch={setPhoneNumberSearch}
+              handleDeleteMultiUsers={() => {
+                handleDeletePernamentMultiCustomers(selectedDeleted);
+                setSelectedDeleted([]);
+              }}
             />
             <TableContent
               isLoading={isLoading}
@@ -353,6 +421,7 @@ export default function CustomersPage() {
               tabStatus="deleted"
               handleDelete={handleDeleteCustomer}
               handleRestore={handleRestoreCustomer}
+              handleDeletePernament={handleDeletePernamentCustomer}
             />
           </>
         )}

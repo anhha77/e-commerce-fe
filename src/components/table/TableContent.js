@@ -32,6 +32,7 @@ function TableContent({
   tabStatus,
   handleDelete,
   handleRestore,
+  handleDeletePernament,
 }) {
   return (
     <>
@@ -72,10 +73,11 @@ function TableContent({
                     tabStatus={tabStatus}
                     status={row.isDeleted}
                     avatarUrl={row.avatarUrl}
-                    selected={selected.indexOf(row.username) !== -1}
-                    handleClick={(event) => handleClick(event, row.username)}
+                    selected={selected.indexOf(row._id) !== -1}
+                    handleClick={(event) => handleClick(event, row._id)}
                     handleDelete={handleDelete}
                     handleRestore={handleRestore}
+                    handleDeletePernament={handleDeletePernament}
                   />
                 ))}
 

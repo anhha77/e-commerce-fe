@@ -24,6 +24,7 @@ import CardAddress from "./CardAddress";
 import CreateAddressForm from "./CreateAddressForm";
 import {
   deleteCustomer,
+  deletePernamentCustomer,
   restoreCustomer,
   updateCustomerProfile,
 } from "../../features/customerSlice";
@@ -148,6 +149,13 @@ function CustomerDetail({ user }) {
                                 theme.palette.error.dark,
                             },
                           }}
+                          onClick={() =>
+                            dispatch(
+                              deletePernamentCustomer({ id: user._id })
+                            ).then(() =>
+                              navigate("/admin/users", { replace: true })
+                            )
+                          }
                         >
                           Delete Pernament
                         </Button>
