@@ -14,6 +14,8 @@ import CustomersPage from "../pages/admin/CustomersPage";
 import CreateCustomersPage from "../pages/admin/CreateCustomerPage";
 import ProfilePage from "../pages/ProfilePage";
 import CustomerProfilePage from "../pages/admin/CustomerProfilePage";
+import CategoryPage from "../pages/admin/CategoryPage";
+import CreateCategoryPage from "../pages/admin/CreateCategoryPage";
 
 export default function Router() {
   return (
@@ -46,6 +48,8 @@ export default function Router() {
           <Route path="create_user" element={<CreateCustomersPage />} />
           <Route path="users/:id" element={<CustomerProfilePage />} />
           <Route path="users/me" element={<ProfilePage />} />
+          <Route path="categories" element={<CategoryPage />} />
+          <Route path="create_category" element={<CreateCategoryPage />} />
         </Route>
 
         <Route element={<BlankLayout />}>
