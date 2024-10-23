@@ -1,12 +1,8 @@
 import { Tab, Tabs, Toolbar } from "@mui/material";
 import { capitalCase } from "change-case";
 import Label from "../label";
-import { useSelector } from "react-redux";
 
-function UserStatusNav({ currentTab, setCurrentTab }) {
-  const { totalCustomers, totalActiveCustomers, totalDeletedCustomers } =
-    useSelector((state) => state.customer);
-
+function CateStatusNav({ currentTab, setCurrentTab }) {
   const STATUS_TAB = [
     {
       value: "all",
@@ -17,7 +13,7 @@ function UserStatusNav({ currentTab, setCurrentTab }) {
             backgroundColor: (theme) => theme.palette.common.black,
           }}
         >
-          {totalCustomers}
+          11
         </Label>
       ),
     },
@@ -36,7 +32,7 @@ function UserStatusNav({ currentTab, setCurrentTab }) {
                 : theme.palette.success.lighter,
           }}
         >
-          {totalActiveCustomers}
+          11
         </Label>
       ),
     },
@@ -55,7 +51,7 @@ function UserStatusNav({ currentTab, setCurrentTab }) {
                 : theme.palette.error.lighter,
           }}
         >
-          {totalDeletedCustomers}
+          0
         </Label>
       ),
     },
@@ -84,4 +80,4 @@ function UserStatusNav({ currentTab, setCurrentTab }) {
   );
 }
 
-export default UserStatusNav;
+export default CateStatusNav;
