@@ -34,6 +34,18 @@ const navConfig = [
         icon: icon("ic_addproduct"),
         id: 1,
       },
+      {
+        title: "categories",
+        path: "/admin/categories",
+        icon: icon("ic_tag"),
+        id: 2,
+      },
+      {
+        title: "create category",
+        path: "/admin/create_category",
+        icon: icon("ic_addtag"),
+        id: 3,
+      },
     ],
   },
   {
@@ -73,18 +85,6 @@ const navConfig = [
         path: "/admin/create_user",
         icon: icon("ic_customerdetail"),
         id: 1,
-      },
-      {
-        title: "categories",
-        path: "/admin/categories",
-        icon: icon("ic_tag"),
-        id: 2,
-      },
-      {
-        title: "create category",
-        path: "/admin/create_category",
-        icon: icon("ic_addtag"),
-        id: 3,
       },
     ],
   },
