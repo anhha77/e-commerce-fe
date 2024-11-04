@@ -39,6 +39,35 @@ export const getCategory = createAsyncThunk(
   }
 );
 
+export const createCategory = createAsyncThunk(
+  "category/createCategory",
+  async (
+    { parentCategoryId, categoryName, imageUrl, childCategories },
+    thunkAPI
+  ) => {
+    try {
+      const data = {
+        parentCategoryId,
+        categoryName,
+        imageUrl,
+        childCategories,
+      };
+      if (imageUrl instanceof File) {
+        imageUrl = await fireBaseUpload(
+          fireBaseExtension,
+          "category",
+          imageUrl
+        );
+      }
+      const response = await apiService.post("/admin/category", data);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
 const slice = createSlice({
   name: "category",
   initialState,
@@ -71,6 +100,21 @@ const slice = createSlice({
         toast.success("Get Category Successfully");
       })
       .addCase(getCategory.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
+        toast.error(action.payload.message);
+      });
+
+    builder
+      .addCase(createCategory.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(createCategory.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.category = action.payload;
+        toast.success("Create Category Successfully");
+      })
+      .addCase(createCategory.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message;
         toast.error(action.payload.message);
