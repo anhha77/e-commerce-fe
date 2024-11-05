@@ -13,7 +13,7 @@ const initialState = {
 };
 
 export const getCategories = createAsyncThunk(
-  "category/getCategries",
+  "category/getCategories",
   async ({ categoryName, sortDirection, page, limit }, thunkAPI) => {
     try {
       const params = { categoryName, sortDirection, page, limit };
@@ -58,9 +58,56 @@ export const createCategory = createAsyncThunk(
           "category",
           imageUrl
         );
+        data.imageUrl = imageUrl;
       }
       const response = await apiService.post("/admin/category", data);
       return response.data;
+    } catch (error) {
+      console.log(error);
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
+export const updateCategory = createAsyncThunk(
+  "category/updateCategory",
+  async (
+    { categoryId, parentCategoryId, categoryName, imageUrl, childCategories },
+    thunkAPI
+  ) => {
+    try {
+      const data = {
+        parentCategoryId,
+        categoryName,
+        imageUrl,
+        childCategories,
+      };
+      if (imageUrl instanceof File) {
+        imageUrl = await fireBaseUpload(
+          fireBaseExtension,
+          "category",
+          imageUrl
+        );
+        data.imageUrl = imageUrl;
+      }
+      const response = await apiService.put(
+        `/admin/category/${categoryId}`,
+        data
+      );
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+
+export const deleteCategory = createAsyncThunk(
+  "category/deleteCategory",
+  async ({ categoryId }, thunkAPI) => {
+    try {
+      const resposne = await apiService.delete(`/admin/category/${categoryId}`);
+      return resposne.data;
     } catch (error) {
       console.log(error);
       return thunkAPI.rejectWithValue(error);
@@ -115,6 +162,35 @@ const slice = createSlice({
         toast.success("Create Category Successfully");
       })
       .addCase(createCategory.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
+        toast.error(action.payload.message);
+      });
+
+    builder
+      .addCase(updateCategory.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(updateCategory.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.category = action.payload;
+        toast.success("Update Category Successfully");
+      })
+      .addCase(updateCategory.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
+        toast.error(action.payload.message);
+      });
+
+    builder
+      .addCase(deleteCategory.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(deleteCategory.fulfilled, (state) => {
+        state.isLoading = false;
+        toast.success("Delete Category Successfully");
+      })
+      .addCase(deleteCategory.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message;
         toast.error(action.payload.message);

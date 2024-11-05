@@ -12,6 +12,7 @@ function CateTableContent() {
             <CateTableHead
               headLabel={[
                 { id: "categoryName", label: "Category Name" },
+                { id: "image", label: "Image" },
                 { id: "" },
               ]}
             />
