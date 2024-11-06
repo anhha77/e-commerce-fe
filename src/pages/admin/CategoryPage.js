@@ -16,6 +16,8 @@ function CategoryPage() {
 
   const [searchQuery, setSearchQuery] = useState("");
 
+  const [sortDirection, setSortDirection] = useState(1);
+
   const emptyRows = (page, rowsPerPage, arrayLength) => {
     return page ? Math.max(0, rowsPerPage - arrayLength) : 0;
   };
@@ -54,6 +56,14 @@ function CategoryPage() {
   const handleSearchQuery = (event) => {
     setPage(0);
     setSearchQuery(event.target.value);
+  };
+
+  const handleSort = () => {
+    if (sortDirection === -1) {
+      setSortDirection(1);
+    } else {
+      setSortDirection(-1);
+    }
   };
 
   return (
