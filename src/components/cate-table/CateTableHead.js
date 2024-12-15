@@ -1,45 +1,39 @@
-import Checkbox from "@mui/material/Checkbox";
-import { TableCell, TableHead, TableRow, TableSortLabel } from "@mui/material";
+import {
+  Box,
+  TableCell,
+  TableHead,
+  TableRow,
+  TableSortLabel,
+} from "@mui/material";
 import React from "react";
+import { visuallyHidden } from "../table/utils";
 
-function CateTableHead({
-  order,
-  headLabel,
-  rowCount,
-  numSelected,
-  onRequestSort,
-  onSelectAllClick,
-}) {
-  const onSort = (property) => {
-    onRequestSort(property);
-  };
-
+function CateTableHead({ order, headLabel, onRequestSort }) {
   return (
     <TableHead>
       <TableRow>
-        <TableCell padding="checkbox">
-          <Checkbox
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
-            onChange={onSelectAllClick}
-          />
-        </TableCell>
-
         {headLabel.map((headCell) => (
           <TableCell
             key={headCell.id}
             align={headCell.align || "left"}
+            sortDirection={headCell.id === "categoryName" ? order : false}
             sx={{ width: headCell.width, minWidth: headCell.minWidth }}
           >
             <TableSortLabel
               hideSortIcon
               active={headCell.id === "categoryName"}
-              sortDirection={headCell.id === "categoryName" ? order : false}
+              direction={headCell.id === "categoryName" ? order : "asc"}
               onClick={() => {
-                if (headCell.id === "categoryName") return onSort();
+                if (headCell.id === "categoryName") return onRequestSort();
               }}
-            />
-            {headCell.label}
+            >
+              {headCell.label}
+              {headCell.id === "categoryName" ? (
+                <Box sx={{ ...visuallyHidden }}>
+                  {order === "desc" ? "sorted descending" : "sorted ascending"}
+                </Box>
+              ) : null}
+            </TableSortLabel>
           </TableCell>
         ))}
       </TableRow>

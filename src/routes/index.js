@@ -16,6 +16,7 @@ import ProfilePage from "../pages/ProfilePage";
 import CustomerProfilePage from "../pages/admin/CustomerProfilePage";
 import CategoryPage from "../pages/admin/CategoryPage";
 import CreateCategoryPage from "../pages/admin/CreateCategoryPage";
+import CategoryDetailPage from "../pages/admin/CategoryDetailPage";
 
 export default function Router() {
   return (
@@ -49,6 +50,11 @@ export default function Router() {
           <Route path="users/:id" element={<CustomerProfilePage />} />
           <Route path="users/me" element={<ProfilePage />} />
           <Route path="categories" element={<CategoryPage />} />
+          <Route
+            path="categories/:categoryId"
+            element={<CategoryDetailPage />}
+          />
+
           <Route path="create_category" element={<CreateCategoryPage />} />
         </Route>
 

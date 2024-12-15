@@ -18,7 +18,7 @@ export const getCategories = createAsyncThunk(
     try {
       const params = { categoryName, sortDirection, page, limit };
       const response = await apiService.get("/category", { params });
-      return response.data;
+      return response.data.data;
     } catch (error) {
       console.log(error);
       return thunkAPI.rejectWithValue(error);
@@ -31,7 +31,7 @@ export const getCategory = createAsyncThunk(
   async ({ categoryId }, thunkAPI) => {
     try {
       const response = await apiService.get(`/category/${categoryId}`);
-      return response.data;
+      return response.data.data;
     } catch (error) {
       console.log(error);
       return thunkAPI.rejectWithValue(error);
@@ -60,6 +60,16 @@ export const createCategory = createAsyncThunk(
         );
         data.imageUrl = imageUrl;
       }
+      childCategories = childCategories.map(async (item) => {
+        if (item.imageUrl instanceof File) {
+          item.imageUrl = await fireBaseUpload(
+            fireBaseExtension,
+            "category",
+            item.imageUrl
+          );
+        }
+        return { categoryName: item.categoryName, imageUrl: item.imageUrl };
+      });
       const response = await apiService.post("/admin/category", data);
       return response.data;
     } catch (error) {
@@ -71,16 +81,11 @@ export const createCategory = createAsyncThunk(
 
 export const updateCategory = createAsyncThunk(
   "category/updateCategory",
-  async (
-    { categoryId, parentCategoryId, categoryName, imageUrl, childCategories },
-    thunkAPI
-  ) => {
+  async ({ categoryId, categoryName, imageUrl }, thunkAPI) => {
     try {
       const data = {
-        parentCategoryId,
         categoryName,
         imageUrl,
-        childCategories,
       };
       if (imageUrl instanceof File) {
         imageUrl = await fireBaseUpload(

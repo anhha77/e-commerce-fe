@@ -1,9 +1,12 @@
 import { Button, Card, Container, Stack, Typography } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Iconify from "../../components/Iconify";
 import { useNavigate } from "react-router-dom";
 import CateTableToolbar from "../../components/cate-table/CateTableToolbar";
 import CateTableContent from "../../components/cate-table/CateTableContent";
+import lodash from "lodash";
+import { getCategories } from "../../features/categorySlice";
+import { useDispatch, useSelector } from "react-redux";
 
 function CategoryPage() {
   const navigate = useNavigate();
@@ -12,36 +15,14 @@ function CategoryPage() {
 
   const [page, setPage] = useState(0);
 
-  const [selected, setSelected] = useState([]);
-
   const [searchQuery, setSearchQuery] = useState("");
 
   const [sortDirection, setSortDirection] = useState(1);
 
+  const dispatch = useDispatch();
+
   const emptyRows = (page, rowsPerPage, arrayLength) => {
     return page ? Math.max(0, rowsPerPage - arrayLength) : 0;
-  };
-
-  const handleSelectAllClick = (event) => {
-    setSelected([]);
-  };
-
-  const handleClick = (event, categoryId) => {
-    const selectedIndex = selected.indexOf(categoryId);
-    let newSelected = [];
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, categoryId);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
-    }
-    setSelected(newSelected);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -66,6 +47,28 @@ function CategoryPage() {
     }
   };
 
+  useEffect(() => {
+    const callAPI = lodash.debounce(
+      () =>
+        dispatch(
+          getCategories({
+            page,
+            limit,
+            categoryName: searchQuery,
+            sortDirection,
+          })
+        ),
+      200
+    );
+    callAPI();
+  }, [dispatch, page, limit, searchQuery, sortDirection]);
+
+  const { isLoading, categories, count } = useSelector(
+    (state) => state.category
+  );
+
+  const notFound = !categories.length && !!searchQuery;
+
   return (
     <Container>
       <Stack
@@ -88,11 +91,23 @@ function CategoryPage() {
 
       <Card>
         <CateTableToolbar
-          numSelected={selected}
           searchQuery={searchQuery}
           onSearchQuery={handleSearchQuery}
         />
-        <CateTableContent />
+        <CateTableContent
+          isLoading={isLoading}
+          categories={categories}
+          total={count ? count : 0}
+          sortDirection={sortDirection}
+          page={page}
+          limit={limit}
+          emptyRows={emptyRows}
+          handleSort={handleSort}
+          handleChangePage={handleChangePage}
+          handleChangeRowsPage={handleChangeRowsPerPage}
+          searchQuery={searchQuery}
+          notFound={notFound}
+        />
       </Card>
     </Container>
   );

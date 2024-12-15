@@ -81,6 +81,7 @@ function UploadAvatar({ error, file, helperText, sx, ...other }) {
           {...getRootProps()}
           sx={{
             ...(isDragActive && { opacity: 0.72 }),
+            ...sx,
           }}
         >
           <input {...getInputProps()} />
@@ -94,6 +95,21 @@ function UploadAvatar({ error, file, helperText, sx, ...other }) {
               }}
             >
               <img alt="avatar" src={isString(file) ? file : file.preview} />
+            </Box>
+          )}
+
+          {!file && (
+            <Box
+              sx={{
+                zIndex: 8,
+                overflow: "hidden",
+                "& img": { objectFit: "cover", width: 1, height: 1 },
+              }}
+            >
+              <img
+                alt="avatar"
+                src="/assets/new_images/No_Image_Available.jpg"
+              />
             </Box>
           )}
 
