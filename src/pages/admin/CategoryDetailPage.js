@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, Link as RouterLink } from "react-router-dom";
 import { getCategory, updateCategory } from "../../features/categorySlice";
@@ -10,6 +10,10 @@ import {
   Divider,
   Grid,
   Stack,
+  Table,
+  TableBody,
+  TableContainer,
+  TablePagination,
   Typography,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -19,6 +23,10 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { fData } from "../../utils/numeralFormat";
 import { LoadingButton } from "@mui/lab";
+import Scrollbar from "../../components/scrollbar";
+import CateTableHead from "../../components/cate-table/CateTableHead";
+import CateTableRow from "../../components/cate-table/CateTableRow";
+import TableEmptyRows from "../../components/table/TableEmptyRows";
 
 const UpdateCateSchema = yup.object().shape({
   categoryName: yup.string().required("Category name is required"),
@@ -26,6 +34,9 @@ const UpdateCateSchema = yup.object().shape({
 
 function CategoryDetailPage() {
   const { categoryId } = useParams();
+  const [sortDirection, setSortDirection] = useState(1);
+  const [limit, setLimit] = useState(5);
+  const [page, setPage] = useState(0);
 
   const { category, isLoading } = useSelector((state) => state.category);
   const dispatch = useDispatch();
@@ -63,6 +74,27 @@ function CategoryDetailPage() {
     },
     [setValue]
   );
+
+  const handleSort = () => {
+    if (sortDirection === -1) {
+      setSortDirection(1);
+    } else {
+      setSortDirection(-1);
+    }
+  };
+
+  const emptyRows = (page, rowsPerPage, arrayLength) => {
+    return page ? Math.max(0, rowsPerPage - arrayLength) : 0;
+  };
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setPage(0);
+    setLimit(parseInt(event.target.value, 10));
+  };
 
   useEffect(() => {
     dispatch(getCategory({ categoryId }));
@@ -104,12 +136,19 @@ function CategoryDetailPage() {
 
           <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
             <Grid container spacing={3}>
-              <Grid item sx={12} md={4}>
+              <Grid item xs={12} md={4}>
                 <Card sx={{ py: 10, px: 3, textAlign: "center" }}>
                   <FUploadAvatar
                     name="imageUrl"
                     maxSize={3145728}
                     onDrop={handleDrop}
+                    defaultValue={`${category?.category?.imageUrl || ""}`}
+                    sx={{
+                      border: "none",
+                      borderRadius: "10px",
+                      width: 200,
+                      height: 200,
+                    }}
                     helperText={
                       <Typography
                         variant="caption"
@@ -125,13 +164,6 @@ function CategoryDetailPage() {
                         <br /> max size of {fData(3145728)}
                       </Typography>
                     }
-                    defaultValue={`${category?.category?.imageUrl || ""}`}
-                    sx={{
-                      border: "none",
-                      borderRadius: "10px",
-                      width: 200,
-                      height: 200,
-                    }}
                   />
                 </Card>
               </Grid>
@@ -192,6 +224,73 @@ function CategoryDetailPage() {
                 </Card>
               </Grid>
             </Grid>
+
+            <Divider sx={{ borderStyle: "dashed", my: 2 }} />
+
+            <>
+              <Scrollbar>
+                <TableContainer sx={{ overflow: "unset", minHeight: 300 }}>
+                  {isLoading ? (
+                    <LoadingScreen />
+                  ) : (
+                    <Table sx={{ minWidth: 800 }}>
+                      <CateTableHead
+                        order={sortDirection === 1 ? "asc" : "desc"}
+                        onRequestSort={handleSort}
+                        headLabel={[
+                          {
+                            id: "categoryName",
+                            label: "Category Name",
+                          },
+                          { id: "image", label: "Image" },
+                          { id: "" },
+                        ]}
+                      />
+                      <TableBody>
+                        {category.childCategories
+                          .slice(0, category.childCategories.length)
+                          .sort((a, b) =>
+                            sortDirection === 1
+                              ? a.categoryName - b.categoryName
+                              : b.categoryName - a.categoryName
+                          )
+                          .slice(page * limit, page * limit + limit)
+                          .map((childCate) => (
+                            <CateTableRow
+                              key={childCate._id}
+                              category={childCate}
+                              isLoading={isLoading}
+                            />
+                          ))}
+                        <TableEmptyRows
+                          height={77}
+                          emptyRows={emptyRows(
+                            page,
+                            limit,
+                            category.childCategories.slice(
+                              page * limit,
+                              page * limit + limit
+                            ).length
+                          )}
+                        />
+                      </TableBody>
+                    </Table>
+                  )}
+                </TableContainer>
+              </Scrollbar>
+
+              <TablePagination
+                showFirstButton
+                showLastButton
+                page={page}
+                component="div"
+                count={category.childCategories.length}
+                rowsPerPage={limit}
+                onPageChange={handleChangePage}
+                rowsPerPageOptions={[5, 10, 15, 20]}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
+            </>
           </FormProvider>
         </Container>
       )}
