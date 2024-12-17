@@ -100,6 +100,13 @@ function CategoryDetailPage() {
     dispatch(getCategory({ categoryId }));
   }, [dispatch, categoryId]);
 
+  const sortCateName = (a, b) => {
+    if (sortDirection === 1) {
+      return 1;
+    }
+    return -1;
+  };
+
   return (
     <>
       {isLoading || !category?.category ? (
@@ -250,9 +257,7 @@ function CategoryDetailPage() {
                         {category.childCategories
                           .slice(0, category.childCategories.length)
                           .sort((a, b) =>
-                            sortDirection === 1
-                              ? a.categoryName - b.categoryName
-                              : b.categoryName - a.categoryName
+                            sortCateName(a.categoryName, b.categoryName)
                           )
                           .slice(page * limit, page * limit + limit)
                           .map((childCate) => (
